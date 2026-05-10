@@ -1,0 +1,3 @@
+Zarif Ashraf resume placeholder.
+
+Replace this text file with your real resume PDF and update resumeLink in assets/app.js.
