@@ -1,8 +1,8 @@
 const app = document.getElementById("app");
 
-const profileImage = "https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=crop&w=300&q=80";
+const profileImage = "LinkedIn_photo.jpeg";
 const bannerImage = "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1600&q=80";
-const resumeLink = "/assets/ZarifAshrafResume.txt";
+const resumeLink = "/assets/Zarif_Ashraf_Resume.pdf";
 const linkedinLink = "https://www.linkedin.com/in/zarifash/";
 
 const navItems = [
@@ -16,17 +16,17 @@ const navItems = [
 const profiles = [
   {
     name: "recruiter",
-    image: "https://picsum.photos/seed/recruiter/300/300",
+    image: "Recruiter.png",
     backgroundGif: "https://media.giphy.com/media/xT9IgzoKnwFNmISR8I/giphy.gif",
   },
   {
     name: "developer",
-    image: "https://picsum.photos/seed/developer/300/300",
+    image: "Developer.png",
     backgroundGif: "https://media.giphy.com/media/qgQUggAC3Pfv687qPC/giphy.gif",
   },
   {
     name: "stalker",
-    image: "https://picsum.photos/seed/stalker/300/300",
+    image: "Stalker.png",
     backgroundGif: "https://media.giphy.com/media/13HgwGsXF0aiGY/giphy.gif",
   },
 ];
@@ -211,7 +211,7 @@ function renderProfile(profileName) {
       <div class="profile-banner" style="--banner: url('${bannerImage}')">
         <div class="banner-content">
           <h1 class="banner-headline">Hi, I'm Zarif Ashraf</h1>
-          <p class="banner-description">A software developer who enjoys building polished user experiences, practical tools, and thoughtful systems. This profile view adapts the target site's recruiter, developer, and curious-viewer browsing flows.</p>
+          <p class="banner-description">Software engineer focused on backend systems, distributed data pipelines, and cloud-native services. Experience building scalable microservices, designing high-throughput data flows, and improving system reliability across large engineering teams. Strong foundation in Go, Python, Java, JavaScript/TypeScript, and Kubernetes-based deployments. Skilled at driving architectural improvements, automating developer workflows, and enhancing application performance in production environments.</p>
           <div class="banner-buttons">
             <button class="banner-button play-button" type="button" data-open="${resumeLink}">▶ <span>Resume</span></button>
             <button class="banner-button more-info-button" type="button" data-open="${linkedinLink}">ⓘ <span>Linkedin</span></button>
