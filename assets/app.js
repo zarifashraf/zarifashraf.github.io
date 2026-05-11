@@ -1,8 +1,10 @@
 const app = document.getElementById("app");
 
-const profileImage = "LinkedIn_photo.jpeg";
+const asset = (fileName) => `/assets/${fileName}`;
+
+const profileImage = asset("LinkedIn_photo.jpeg");
 const bannerImage = "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1600&q=80";
-const resumeLink = "/assets/Zarif_Ashraf_Resume.pdf";
+const resumeLink = asset("Zarif_Ashraf_Resume.pdf");
 const linkedinLink = "https://www.linkedin.com/in/zarifash/";
 
 const navItems = [
@@ -16,24 +18,23 @@ const navItems = [
 const profiles = [
   {
     name: "recruiter",
-    image: "Recruiter.png",
+    image: asset("Recruiter.png"),
     backgroundGif: "https://media.giphy.com/media/xT9IgzoKnwFNmISR8I/giphy.gif",
   },
   {
     name: "developer",
-    image: "Developer.png",
+    image: asset("Developer.png"),
     backgroundGif: "https://media.giphy.com/media/qgQUggAC3Pfv687qPC/giphy.gif",
   },
   {
     name: "stalker",
-    image: "Stalker.png",
+    image: asset("Stalker.png"),
     backgroundGif: "https://media.giphy.com/media/13HgwGsXF0aiGY/giphy.gif",
   },
 ];
 
 const topPicks = {
   recruiter: [
-    ["Work Permit", "/work-permit/", "https://picsum.photos/seed/workpermit/250/200"],
     ["Skills", "/skills/", "https://picsum.photos/seed/skills/250/200"],
     ["Experience", "/work-experience/", "https://picsum.photos/seed/workexperience/250/200"],
     ["Certifications", "/certifications/", "https://picsum.photos/seed/certifications/250/200"],
@@ -58,45 +59,59 @@ const topPicks = {
   ],
 };
 
-const continueWatching = {
-  recruiter: [
-    ["Professional", "/work-experience/", "https://picsum.photos/id/1011/300/200"],
-    ["Projects", "/projects/", "https://picsum.photos/id/1015/300/200"],
-    ["Skills", "/skills/", "https://picsum.photos/id/1020/300/200"],
-    ["Contact Me", "/contact-me/", "https://picsum.photos/id/1029/300/200"],
-  ],
-  developer: [
-    ["Projects", "/projects/", "https://picsum.photos/id/180/300/200"],
-    ["Skills", "/skills/", "https://picsum.photos/id/0/300/200"],
-    ["Blogs", "/blogs/", "https://picsum.photos/id/24/300/200"],
-    ["Certifications", "/certifications/", "https://picsum.photos/id/1028/300/200"],
-  ],
-  stalker: [
-    ["Reading", "/reading/", "https://picsum.photos/id/1026/300/200"],
-    ["Music", "/music/", "https://picsum.photos/id/1025/300/200"],
-    ["Blogs", "/blogs/", "https://picsum.photos/id/20/300/200"],
-    ["Contact Me", "/contact-me/", "https://picsum.photos/id/1029/300/200"],
-  ],
-};
-
 const skills = {
-  Frontend: [
-    ["React", "Reusable components and stateful interfaces"],
-    ["TypeScript", "Typed UI and application logic"],
-    ["HTML5", "Semantic page structure"],
-    ["CSS3", "Responsive layouts and animation"],
+  Languages: [
+    ["Go", "Backend services and concurrent systems"],
+    ["Python", "Automation, data, and backend development"],
+    ["Java", "Enterprise applications and service layers"],
+    ["JavaScript", "Interactive web application logic"],
+    ["TypeScript", "Typed frontend and backend code"],
+    ["Bash", "Shell automation and developer tooling"],
+    ["C", "Systems programming fundamentals"],
   ],
-  Backend: [
-    ["Node.js", "APIs and service integrations"],
-    ["Python", "Automation, data, and scripting"],
-    ["PostgreSQL", "Relational data modeling"],
-    ["GraphQL", "Structured client-server contracts"],
+  "Backend & Frameworks": [
+    ["Maven", "Java build and dependency management"],
+    ["Gradle", "Build automation for JVM projects"],
+    ["Spring Boot", "Production-ready Java services"],
+    ["Node", "Server-side JavaScript applications"],
+    ["React", "Reusable component-based interfaces"],
+    ["React Native", "Cross-platform mobile interfaces"],
+    ["Vue", "Progressive frontend applications"],
+    ["Flask", "Lightweight Python web services"],
+    ["FastAPI", "Typed Python APIs and service endpoints"],
+    ["Next.js", "Full-stack React applications"],
   ],
-  Cloud: [
-    ["AWS", "Cloud deployments and managed services"],
+  "Cloud & DevOps": [
+    ["AWS S3", "Object storage and cloud asset workflows"],
     ["Docker", "Containerized local and production workflows"],
-    ["CI/CD", "Automated testing and delivery"],
-    ["GitHub", "Version control and collaboration"],
+    ["Kubernetes", "Container orchestration and deployments"],
+    ["Helm", "Kubernetes release packaging"],
+    ["Ansible", "Configuration management and automation"],
+    ["OpenShift", "Enterprise Kubernetes platform operations"],
+  ],
+  "Data & Streaming": [
+    ["SQL", "Relational querying and data modeling"],
+    ["KDB+", "High-performance time-series analytics"],
+    ["Pinot", "Real-time OLAP analytics"],
+    ["Flink", "Stream processing pipelines"],
+    ["Kafka", "Event streaming and message pipelines"],
+    ["Polars", "Fast dataframe transformations"],
+    ["Pandas", "Data analysis and transformation"],
+    ["Elasticsearch", "Search, indexing, and log exploration"],
+  ],
+  "Testing & Monitoring": [
+    ["JUnit", "Java unit and integration testing"],
+    ["Robot Framework", "Acceptance and automation testing"],
+    ["Cucumber", "Behavior-driven test scenarios"],
+    ["Mockito", "Mocking for Java tests"],
+    ["OpenTelemetry", "Tracing and observability instrumentation"],
+    ["Grafana", "Dashboards and operational monitoring"],
+  ],
+  "Design & Architecture": [
+    ["Caching strategies", "Performance-aware data access patterns"],
+    ["Database design", "Schema modeling and storage tradeoffs"],
+    ["Data tracing", "End-to-end visibility across data flows"],
+    ["REST", "Resource-oriented API design"],
   ],
 };
 
@@ -128,9 +143,40 @@ const certifications = [
 ];
 
 const experiences = [
-  ["Software Developer", "Personal Website", "2026", "Built and iterated on a polished personal portfolio with static hosting constraints."],
-  ["Full-Stack Developer", "Academic and Personal Projects", "2025", "Developed applications with frontend interfaces, backend APIs, and database-backed features."],
-  ["Research Collaborator", "University Projects", "2024", "Worked on technical problem-solving, documentation, and collaborative delivery."],
+  {
+    role: "Data Engineer",
+    company: "Citigroup Inc.",
+    location: "Mississauga, Canada",
+    dates: "July 2025 - Present",
+    summary: "Building high-throughput market data platforms for fixed income and commodities trading. Delivered an S3-backed parquet warehouse for about 1.4 TB of daily market data, improved legacy ingestion performance by 5x with Python multiprocessing, Polars, and PyArrow, and introduced OpenTelemetry tracing for real-time Flink pipelines.",
+  },
+  {
+    role: "Software Engineer",
+    company: "Citigroup Inc.",
+    location: "Mississauga, Canada",
+    dates: "July 2024 - July 2025",
+    summary: "Worked across microservices, API gateways, and latency-sensitive client flows. Improved observability with a unified database schema, reduced diagnosis time by 50%, cut key API response times from 9s to 3s with caching and execution-path redesign, and automated CI maintenance workflows with Bash tooling.",
+  },
+  {
+    role: "Mobile Application Tech Lead",
+    company: "iRespite Services",
+    location: "Montreal, Canada",
+    dates: "January 2023 - December 2023",
+    summary: "Led architecture, implementation, and code review for the iRespite MHealth platform. Delivered a production-ready React Native application backed by Firebase and 42 API endpoints for patients, family members, and care providers, helping secure a $108K startup grant through stakeholder and investor presentations.",
+  },
+];
+
+const recommendations = [
+  {
+    name: "Tony Khozam",
+    title: "Senior Software Engineering Lead",
+    quote: "During his year on my team in a rotational program, Ash consistently impressed me with his initiative and ability to learn quickly while handling programming, design, and implementation tasks. He's great at working independently but also knows when and how to ask for help effectively. Ash is always willing to lend a hand to teammates, and he has a good understanding of his own abilities, always striving to improve. He would be a strong addition to any team.",
+  },
+  {
+    name: "Tianjiao He",
+    title: "Software Engineer",
+    quote: "I am pleased to recommend Zarif Ashraf, who has consistently demonstrated outstanding teamwork, technical expertise, and leadership abilities in our projects together. Ash is an effective communicator, known for clearly articulating project goals and technical details to our team. Ash is a fast learner who quickly adapts to new technologies such as Go, Python and testing techniques. He is always ready to lend a hand to peers. I confidently recommend Zarif Ashraf for any role that requires deep technical knowledge, teamwork, and leadership.",
+  },
 ];
 
 function path() {
@@ -139,6 +185,62 @@ function path() {
 
 function go(to) {
   window.location.href = to;
+}
+
+function addTone(audioContext, destination, frequency, start, duration, peakVolume, type = "sine") {
+  const oscillator = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+
+  oscillator.type = type;
+  oscillator.frequency.setValueAtTime(frequency, start);
+  gain.gain.setValueAtTime(0.001, start);
+  gain.gain.exponentialRampToValueAtTime(peakVolume, start + 0.025);
+  gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
+
+  oscillator.connect(gain);
+  gain.connect(destination);
+  oscillator.start(start);
+  oscillator.stop(start + duration + 0.05);
+}
+
+async function playOpeningSound() {
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContext) return;
+
+  const audioContext = new AudioContext();
+  const resume = audioContext.state === "suspended" ? audioContext.resume() : Promise.resolve();
+  try {
+    await Promise.race([
+      resume,
+      new Promise((_, reject) => window.setTimeout(() => reject(new Error("Audio start blocked")), 400)),
+    ]);
+  } catch (error) {
+    await audioContext.close();
+    throw error;
+  }
+
+  if (audioContext.state !== "running") {
+    await audioContext.close();
+    throw new Error("Audio start blocked");
+  }
+
+  const now = audioContext.currentTime + 0.04;
+  const master = audioContext.createGain();
+  const compressor = audioContext.createDynamicsCompressor();
+
+  master.gain.setValueAtTime(0.75, now);
+  master.gain.exponentialRampToValueAtTime(0.001, now + 1.8);
+  master.connect(compressor);
+  compressor.connect(audioContext.destination);
+
+  addTone(audioContext, master, 110, now, 0.45, 0.9, "triangle");
+  addTone(audioContext, master, 55, now, 0.6, 0.55, "sine");
+  addTone(audioContext, master, 147, now + 0.35, 0.55, 0.85, "triangle");
+  addTone(audioContext, master, 220, now + 0.35, 0.5, 0.22, "sine");
+  addTone(audioContext, master, 330, now + 0.85, 0.7, 0.12, "sine");
+  addTone(audioContext, master, 440, now + 0.9, 0.65, 0.08, "sine");
+
+  window.setTimeout(() => audioContext.close(), 2200);
 }
 
 function shell(content) {
@@ -178,8 +280,40 @@ function icon(label) {
 }
 
 function renderSplash() {
-  app.innerHTML = `<main class="netflix-container"><div class="netflix-logo">ZARIF</div></main>`;
-  window.setTimeout(() => go("/browse/"), 2900);
+  app.innerHTML = `
+    <main class="netflix-container">
+      <div class="netflix-logo">ZARIF</div>
+      <button class="splash-start hidden" type="button" data-start-splash>Start</button>
+    </main>
+  `;
+
+  const startButton = document.querySelector("[data-start-splash]");
+  let redirectTimer;
+  const startSplash = async () => {
+    startButton.classList.add("hidden");
+    window.clearTimeout(redirectTimer);
+    await playOpeningSound();
+    redirectTimer = window.setTimeout(() => go("/browse/"), 2600);
+  };
+  const showStartButton = () => {
+    startButton.classList.remove("hidden");
+    redirectTimer = window.setTimeout(() => go("/browse/"), 6000);
+  };
+  const startAfterGesture = () => {
+    startSplash().catch(() => {
+      redirectTimer = window.setTimeout(() => go("/browse/"), 2600);
+    });
+  };
+  const tryAutoplay = () => {
+    if (document.hidden) {
+      showStartButton();
+      return;
+    }
+    startSplash().catch(showStartButton);
+  };
+
+  startButton.addEventListener("click", startAfterGesture, { once: true });
+  tryAutoplay();
 }
 
 function renderBrowse() {
@@ -205,7 +339,6 @@ function renderProfile(profileName) {
     return;
   }
   const picks = topPicks[current.name];
-  const watching = continueWatching[current.name];
   app.innerHTML = shell(`
     <section class="profile-page" style="background-image: url('${current.backgroundGif}')">
       <div class="profile-banner" style="--banner: url('${bannerImage}')">
@@ -220,13 +353,12 @@ function renderProfile(profileName) {
       </div>
     </section>
     ${row(`Today's Top Picks for ${current.name}`, picks)}
-    ${row(`Continue Watching for ${current.name}`, watching, true)}
   `);
 }
 
-function row(title, items, useLinks = false) {
+function row(title, items) {
   return `
-    <section class="${useLinks ? "continue-watching-row" : "top-picks-row"}">
+    <section class="top-picks-row">
       <h2 class="row-title">${title}</h2>
       <div class="card-row">
         ${items.map(([title, url, image], index) => `
@@ -240,31 +372,19 @@ function row(title, items, useLinks = false) {
   `;
 }
 
-function renderWorkPermit() {
-  app.innerHTML = shell(`
-    <main class="work-permit-container">
-      <article class="work-permit-card">
-        <h1 class="work-permit-headline">Work Permit</h1>
-        <p class="work-permit-summary">I am currently available for software development opportunities. Replace this section with your exact work authorization, location, and availability details.</p>
-        <p class="additional-info"><strong>Open to:</strong> internships, research projects, full-time roles, and collaborative engineering work.</p>
-      </article>
-    </main>
-  `);
-}
-
 function renderExperience() {
   app.innerHTML = shell(`
     <main class="timeline-container">
-      <h1 class="timeline-title">Professional Journey</h1>
+      <h1 class="timeline-title">Work Experience</h1>
       <div class="timeline">
-        ${experiences.map(([role, org, date, summary], index) => `
+        ${experiences.map((experience, index) => `
           <section class="timeline-element">
             <div class="timeline-icon">${index + 1}</div>
             <article class="timeline-content">
-              <h2>${org}</h2>
-              <h3>${role}</h3>
-              <p>${summary}</p>
-              <span>${date}</span>
+              <h2>${experience.role}</h2>
+              <h3>${experience.company}</h3>
+              <p class="timeline-meta">${experience.location} / ${experience.dates}</p>
+              <p class="timeline-summary">${experience.summary}</p>
             </article>
           </section>
         `).join("")}
@@ -275,22 +395,24 @@ function renderExperience() {
 
 function renderRecommendations() {
   app.innerHTML = shell(`
-    <main class="timeline-container">
-      <article class="recommendation-card">
-        <header class="recommendation-header">
-          <img class="profile-pic" src="https://picsum.photos/seed/reference/140/140" alt="Reference profile">
-          <div>
-            <h3>Reference Available</h3>
-            <p>Professor, manager, or collaborator</p>
-            <p class="date">Updated 2026</p>
+    <main class="recommendations-container">
+      <h1 class="timeline-title">Recommendations</h1>
+      <div class="recommendations-list">
+        ${recommendations.map((recommendation) => `
+          <div class="recommendation-card">
+            <header class="recommendation-header">
+              <div class="recommendation-avatar" aria-hidden="true">${recommendation.name.charAt(0)}</div>
+              <div>
+                <h3>${recommendation.name}</h3>
+                <p>${recommendation.title}</p>
+              </div>
+            </header>
+            <div class="recommendation-body">
+              <p>"${recommendation.quote}"</p>
+            </div>
           </div>
-        </header>
-        <div class="recommendation-body">
-          <p>"Zarif brings curiosity, technical care, and a steady collaborative style to engineering work."</p>
-          <p>Use this section for a real recommendation once you have the final quote. The page keeps the original dotted-card treatment, hover lift, and Netflix-red accents.</p>
-          <p><strong>Highlights:</strong> problem solving, fast learning, clear communication, and strong ownership.</p>
+        `).join("")}
         </div>
-      </article>
     </main>
   `);
 }
@@ -342,16 +464,15 @@ function renderContact() {
         <img src="${profileImage}" alt="Zarif Ashraf" class="badge-avatar">
         <div class="badge-content">
           <h1 class="badge-name">Zarif Ashraf</h1>
-          <p class="badge-title">Software Developer</p>
-          <p class="badge-description">Building thoughtful web experiences and tools.</p>
+          <p class="badge-title">Software Engineer</p>
+          <p class="badge-description">Thinking Slow. Learning Fast.</p>
           <p class="badge-company">McGill University</p>
           <a href="${linkedinLink}" target="_blank" rel="noopener noreferrer" class="badge-link">View Profile</a>
         </div>
       </section>
       <div class="contact-header"><p>I'm always up for a chat or a coffee. Feel free to reach out.</p></div>
       <div class="contact-details">
-        <div class="contact-item"><span class="contact-icon">✉</span><a href="mailto:zarifashraf@example.com" class="contact-link">zarifashraf@example.com</a></div>
-        <div class="contact-item"><span class="contact-icon">☎</span><a href="tel:+10000000000" class="contact-link">+1 000 000 0000</a></div>
+        <div class="contact-item"><span class="contact-icon">✉</span><a href="mailto:zarif.ashraf@mail.mcgill.ca" class="contact-link">zarif.ashraf@mail.mcgill.ca</a></div>
       </div>
     </main>
   `);
@@ -460,7 +581,6 @@ function render() {
   if (currentPath === "/") renderSplash();
   else if (currentPath === "/browse") renderBrowse();
   else if (currentPath.startsWith("/profile/")) renderProfile(currentPath.split("/")[2]);
-  else if (currentPath === "/work-permit") renderWorkPermit();
   else if (currentPath === "/work-experience") renderExperience();
   else if (currentPath === "/recommendations") renderRecommendations();
   else if (currentPath === "/skills") renderSkills();

@@ -27,6 +27,7 @@ button {
   height: 100vh;
   justify-content: center;
   overflow: hidden;
+  position: relative;
 }
 
 .netflix-logo {
@@ -36,6 +37,34 @@ button {
   font-weight: 900;
   letter-spacing: 0;
   text-shadow: 0 0 30px rgba(229, 9, 20, 0.45);
+}
+
+.splash-start {
+  background: #fff;
+  border: 0;
+  border-radius: 4px;
+  bottom: 12vh;
+  color: #141414;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 800;
+  left: 50%;
+  min-width: 120px;
+  opacity: 1;
+  padding: 0.8rem 1.4rem;
+  position: absolute;
+  transform: translateX(-50%);
+  transition: background-color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+}
+
+.splash-start:hover {
+  background: #e5e5e5;
+  transform: translateX(-50%) scale(1.04);
+}
+
+.splash-start.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 @keyframes zoomOut {
@@ -293,8 +322,7 @@ button {
   background-color: rgba(109, 109, 110, 0.9);
 }
 
-.top-picks-row,
-.continue-watching-row {
+.top-picks-row {
   color: #fff;
   padding: 20px;
 }
@@ -372,56 +400,6 @@ button {
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   top: 50%;
   transform: translate(-50%, -50%);
-}
-
-.work-permit-container {
-  align-items: center;
-  display: flex;
-  min-height: 100vh;
-  justify-content: center;
-  padding: 7rem 1.25rem 2rem;
-}
-
-.work-permit-card {
-  animation: fadeInUp 0.5s ease-out;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  color: #333;
-  max-width: 560px;
-  padding: 25px 35px;
-  text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.work-permit-card:hover {
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
-  transform: translateY(-6px);
-}
-
-.work-permit-headline {
-  color: #e50914;
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 20px;
-}
-
-.work-permit-summary {
-  color: #555;
-  font-size: 1.1rem;
-  line-height: 1.6;
-}
-
-.work-permit-summary strong,
-.additional-info strong {
-  color: #e50914;
-}
-
-.additional-info {
-  color: #333;
-  font-size: 1rem;
-  font-style: italic;
-  margin-top: 20px;
 }
 
 .timeline-container {
@@ -504,8 +482,32 @@ button {
   margin: 0;
 }
 
+.timeline-content h2 {
+  color: #e50914;
+}
+
+.timeline-content h3 {
+  color: #303e49;
+  font-size: 1rem;
+  margin-top: 0.25rem;
+}
+
 .timeline-content p {
   line-height: 1.6;
+}
+
+.timeline-meta {
+  color: #637282;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0.6rem 0 1rem;
+}
+
+.timeline-summary {
+  color: #42505f;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  margin: 0;
 }
 
 .recommendation-card {
@@ -529,6 +531,36 @@ button {
 .recommendation-header {
   align-items: center;
   display: flex;
+}
+
+.recommendations-container {
+  color: #fff;
+  margin: 0 auto;
+  max-width: 900px;
+  min-height: 100vh;
+  padding: 7rem 1.25rem 3rem;
+  text-align: center;
+}
+
+.recommendations-list {
+  display: grid;
+  gap: 24px;
+}
+
+.recommendation-avatar {
+  align-items: center;
+  background: #e50914;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  flex: 0 0 auto;
+  font-size: 1.6rem;
+  font-weight: 800;
+  height: 70px;
+  justify-content: center;
+  margin-right: 15px;
+  width: 70px;
 }
 
 .profile-pic {
