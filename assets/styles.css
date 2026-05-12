@@ -31,12 +31,72 @@ button {
 }
 
 .netflix-logo {
-  animation: zoomOut 3s ease-in-out forwards;
-  color: #e50914;
+  color: transparent;
+  display: flex;
+  font-family: Didot, "Bodoni 72", "Bodoni MT", "Palatino Linotype", Georgia, serif;
   font-size: clamp(4rem, 14vw, 11rem);
-  font-weight: 900;
+  font-weight: 500;
+  gap: 0;
   letter-spacing: 0;
-  text-shadow: 0 0 30px rgba(229, 9, 20, 0.45);
+  line-height: 0.85;
+  perspective: 900px;
+  text-transform: uppercase;
+  transform-style: preserve-3d;
+}
+
+.logo-letter {
+  background: linear-gradient(90deg, #8b0008 0%, #e50914 45%, #ff6b73 52%, #b0000b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  display: inline-block;
+  margin: 0 var(--space);
+  text-shadow: 0 0 24px rgba(229, 9, 20, 0.42), 0 10px 22px rgba(0, 0, 0, 0.5);
+  transform: rotateY(var(--rotate)) translateZ(var(--depth)) translateY(var(--lift));
+  transform-style: preserve-3d;
+}
+
+.logo-letter:nth-child(1) {
+  --depth: 0.18em;
+  --lift: 0;
+  --rotate: 28deg;
+  --space: 0.06em;
+  font-size: 1.14em;
+}
+
+.logo-letter:nth-child(2) {
+  --depth: -0.12em;
+  --lift: 0.08em;
+  --rotate: 12deg;
+  --space: -0.02em;
+  font-size: 0.9em;
+}
+
+.logo-letter:nth-child(3) {
+  --depth: -0.24em;
+  --lift: 0.16em;
+  --rotate: 0deg;
+  --space: -0.035em;
+  font-size: 0.82em;
+}
+
+.logo-letter:nth-child(4) {
+  --depth: -0.12em;
+  --lift: 0.08em;
+  --rotate: -12deg;
+  --space: -0.02em;
+  font-size: 0.9em;
+}
+
+.logo-letter:nth-child(5) {
+  --depth: 0.18em;
+  --lift: 0;
+  --rotate: -28deg;
+  --space: 0.06em;
+  font-size: 1.14em;
+}
+
+.netflix-logo.playing {
+  animation: zoomOut 4s ease-in-out forwards;
 }
 
 .splash-start {
@@ -68,9 +128,13 @@ button {
 }
 
 @keyframes zoomOut {
-  0%, 80% {
+  0% {
     opacity: 1;
     transform: scale(1);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1.75);
   }
   to {
     opacity: 0;

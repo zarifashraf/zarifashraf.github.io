@@ -5,7 +5,9 @@ const asset = (fileName) => `/assets/${fileName}`;
 const profileImage = asset("LinkedIn_photo.jpeg");
 const bannerImage = "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1600&q=80";
 const resumeLink = asset("Zarif_Ashraf_Resume.pdf");
+const openingSound = asset("Intro.mp3");
 const linkedinLink = "https://www.linkedin.com/in/zarifash/";
+const splashDuration = 4000;
 
 const navItems = [
   ["Home", "/browse/"],
@@ -187,60 +189,19 @@ function go(to) {
   window.location.href = to;
 }
 
-function addTone(audioContext, destination, frequency, start, duration, peakVolume, type = "sine") {
-  const oscillator = audioContext.createOscillator();
-  const gain = audioContext.createGain();
+let introAudio;
 
-  oscillator.type = type;
-  oscillator.frequency.setValueAtTime(frequency, start);
-  gain.gain.setValueAtTime(0.001, start);
-  gain.gain.exponentialRampToValueAtTime(peakVolume, start + 0.025);
-  gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
-
-  oscillator.connect(gain);
-  gain.connect(destination);
-  oscillator.start(start);
-  oscillator.stop(start + duration + 0.05);
-}
-
-async function playOpeningSound() {
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
-  if (!AudioContext) return;
-
-  const audioContext = new AudioContext();
-  const resume = audioContext.state === "suspended" ? audioContext.resume() : Promise.resolve();
-  try {
-    await Promise.race([
-      resume,
-      new Promise((_, reject) => window.setTimeout(() => reject(new Error("Audio start blocked")), 400)),
-    ]);
-  } catch (error) {
-    await audioContext.close();
-    throw error;
+function playOpeningSound() {
+  if (introAudio) {
+    introAudio.pause();
+    introAudio.currentTime = 0;
   }
 
-  if (audioContext.state !== "running") {
-    await audioContext.close();
-    throw new Error("Audio start blocked");
-  }
-
-  const now = audioContext.currentTime + 0.04;
-  const master = audioContext.createGain();
-  const compressor = audioContext.createDynamicsCompressor();
-
-  master.gain.setValueAtTime(0.75, now);
-  master.gain.exponentialRampToValueAtTime(0.001, now + 1.8);
-  master.connect(compressor);
-  compressor.connect(audioContext.destination);
-
-  addTone(audioContext, master, 110, now, 0.45, 0.9, "triangle");
-  addTone(audioContext, master, 55, now, 0.6, 0.55, "sine");
-  addTone(audioContext, master, 147, now + 0.35, 0.55, 0.85, "triangle");
-  addTone(audioContext, master, 220, now + 0.35, 0.5, 0.22, "sine");
-  addTone(audioContext, master, 330, now + 0.85, 0.7, 0.12, "sine");
-  addTone(audioContext, master, 440, now + 0.9, 0.65, 0.08, "sine");
-
-  window.setTimeout(() => audioContext.close(), 2200);
+  introAudio = new Audio(openingSound);
+  introAudio.preload = "auto";
+  introAudio.volume = 1;
+  introAudio.currentTime = 0;
+  return introAudio.play().then(() => introAudio);
 }
 
 function shell(content) {
@@ -282,38 +243,36 @@ function icon(label) {
 function renderSplash() {
   app.innerHTML = `
     <main class="netflix-container">
-      <div class="netflix-logo">ZARIF</div>
-      <button class="splash-start hidden" type="button" data-start-splash>Start</button>
+      <div class="netflix-logo" aria-label="ZARIF">
+        ${["Z", "A", "R", "I", "F"].map((letter) => `<span class="logo-letter">${letter}</span>`).join("")}
+      </div>
+      <button class="splash-start" type="button" data-start-splash>Start</button>
     </main>
   `;
 
+  const logo = document.querySelector(".netflix-logo");
   const startButton = document.querySelector("[data-start-splash]");
   let redirectTimer;
   const startSplash = async () => {
     startButton.classList.add("hidden");
+    logo.classList.add("playing");
     window.clearTimeout(redirectTimer);
-    await playOpeningSound();
-    redirectTimer = window.setTimeout(() => go("/browse/"), 2600);
+    const audio = await playOpeningSound();
+    redirectTimer = window.setTimeout(() => go("/browse/"), splashDuration + 250);
+    audio.addEventListener("ended", () => {
+      window.clearTimeout(redirectTimer);
+      go("/browse/");
+    }, { once: true });
   };
-  const showStartButton = () => {
+  const resetSplash = () => {
+    logo.classList.remove("playing");
     startButton.classList.remove("hidden");
-    redirectTimer = window.setTimeout(() => go("/browse/"), 6000);
   };
   const startAfterGesture = () => {
-    startSplash().catch(() => {
-      redirectTimer = window.setTimeout(() => go("/browse/"), 2600);
-    });
-  };
-  const tryAutoplay = () => {
-    if (document.hidden) {
-      showStartButton();
-      return;
-    }
-    startSplash().catch(showStartButton);
+    startSplash().catch(resetSplash);
   };
 
   startButton.addEventListener("click", startAfterGesture, { once: true });
-  tryAutoplay();
 }
 
 function renderBrowse() {
@@ -343,7 +302,7 @@ function renderProfile(profileName) {
     <section class="profile-page" style="background-image: url('${current.backgroundGif}')">
       <div class="profile-banner" style="--banner: url('${bannerImage}')">
         <div class="banner-content">
-          <h1 class="banner-headline">Hi, I'm Zarif Ashraf</h1>
+          <h1 class="banner-headline">Hi, I'm Zarif</h1>
           <p class="banner-description">Software engineer focused on backend systems, distributed data pipelines, and cloud-native services. Experience building scalable microservices, designing high-throughput data flows, and improving system reliability across large engineering teams. Strong foundation in Go, Python, Java, JavaScript/TypeScript, and Kubernetes-based deployments. Skilled at driving architectural improvements, automating developer workflows, and enhancing application performance in production environments.</p>
           <div class="banner-buttons">
             <button class="banner-button play-button" type="button" data-open="${resumeLink}">▶ <span>Resume</span></button>
