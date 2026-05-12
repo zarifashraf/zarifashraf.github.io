@@ -177,6 +177,21 @@ const recommendations = [
     quote: "During his year on my team in a rotational program, Ash consistently impressed me with his initiative and ability to learn quickly while handling programming, design, and implementation tasks. He's great at working independently but also knows when and how to ask for help effectively. Ash is always willing to lend a hand to teammates, and he has a good understanding of his own abilities, always striving to improve. He would be a strong addition to any team.",
   },
   {
+    name: "Sahresh Akbar",
+    title: "Senior Software Engineering Lead",
+    quote: "Good python coding background: Ash exhibits a robust understanding and practical application of Python. This skill enables them to develop efficient scripts, analyze complex datasets, and contribute effectively to the team's data-driven projects, forming a core technical asset. Collaborative team player: Ash consistently demonstrates strong collaborative skills, actively contributing to team cohesion and project success. He effectively communicates with colleagues, offers support, and maintains a positive attitude that enhances overall team dynamics and productivity. Reliable task management and follow-through: Zarif is organized and reliable, consistently staying on top of their assigned tasks. He demonstrates good follow-through, ensuring that responsibilities are completed thoroughly and deadlines are met, instilling confidence in their ability to deliver results.",
+  },
+  {
+    name: "Oleg Braginsky",
+    title: "Senior Software Engineer",
+    quote: "Highly responsible and dependable. A strong team player who can also deliver independently. Approaches tasks with a proactive, can-do attitude and ensures they are completed to the highest standard. Possesses excellent analytical skills and the ability to raise concerns promptly. Ash consistently demonstrates exceptional responsibility, and a proactive attitude, exceling both as an independent contributor and a collaborative team player. His ability to adapt, raise concerns promptly, assist his co-workers and deliver high-quality solutions makes him a valuable asset to any team.",
+  },
+  {
+    name: "Vadym Mielientsov",
+    title: "Senior Software Engineer",
+    quote: "Strong problem-solving skills: Consistently demonstrates the ability to tackle complex tasks independently, finding effective solutions without needing close guidance. This self-sufficiency greatly contributes to overall team productivity. Attention to detail: Produces high-quality work with precision, ensuring code is robust, well-structured, and aligned with best practices. His meticulous natures helps prevent issues before they arise. Technical Versatility: Shows strong capability in handling tasks that require both architectural understanding and database interaction. Effectively implements analysis tickets, bridging the gap between high-level design and detailed implementation.",
+  },
+  {
     name: "Tianjiao He",
     title: "Software Engineer",
     quote: "I am pleased to recommend Zarif Ashraf, who has consistently demonstrated outstanding teamwork, technical expertise, and leadership abilities in our projects together. Ash is an effective communicator, known for clearly articulating project goals and technical details to our team. Ash is a fast learner who quickly adapts to new technologies such as Go, Python and testing techniques. He is always ready to lend a hand to peers. I confidently recommend Zarif Ashraf for any role that requires deep technical knowledge, teamwork, and leadership.",
