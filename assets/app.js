@@ -138,10 +138,12 @@ const blogs = [
 ];
 
 const certifications = [
-  ["AWS Cloud Foundations", "Coursera", "2025"],
-  ["Frontend Engineering", "Udemy", "2024"],
-  ["Database Systems", "University", "2024"],
-  ["Software Design", "IEEE", "2023"],
+  {
+    title: "Data Streaming Engineer",
+    issuer: "Confluent",
+    date: "2026",
+    url: "https://certificates.confluent.io/61d525af-4def-4509-bfb4-47446db5b970#acc.v65r9aJN",
+  },
 ];
 
 const experiences = [
@@ -492,9 +494,9 @@ function renderCertifications() {
     <main class="certifications-container">
       <h1 class="certifications-title">Certifications</h1>
       <div class="certifications-grid">
-        ${certifications.map(([title, issuer, date], index) => `
-          <a href="/certifications/" class="certification-card" style="--delay:${0.2 * index}s">
-            <div class="certification-content"><div class="certification-icon">▣</div><h2>${title}</h2><p>${issuer}</p><span class="issued-date">Issued ${date}</span></div>
+        ${certifications.map((certification, index) => `
+          <a href="${certification.url}" target="_blank" rel="noopener noreferrer" class="certification-card" style="--delay:${0.2 * index}s">
+            <div class="certification-content"><div class="certification-icon">▣</div><h2>${certification.title}</h2><p>${certification.issuer}</p><span class="issued-date">Issued ${certification.date}</span></div>
             <div class="certification-link">↗</div>
           </a>
         `).join("")}
