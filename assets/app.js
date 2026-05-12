@@ -242,15 +242,15 @@ function icon(label) {
 
 function renderSplash() {
   app.innerHTML = `
-    <main class="netflix-container">
-      <div class="netflix-logo" aria-label="ZARIF">
+    <main class="portfolio-container">
+      <div class="portfolio-logo" aria-label="ZARIF">
         ${["Z", "A", "R", "I", "F"].map((letter) => `<span class="logo-letter">${letter}</span>`).join("")}
       </div>
       <button class="splash-start" type="button" data-start-splash>Start</button>
     </main>
   `;
 
-  const logo = document.querySelector(".netflix-logo");
+  const logo = document.querySelector(".portfolio-logo");
   const startButton = document.querySelector("[data-start-splash]");
   let redirectTimer;
   const startSplash = async () => {

@@ -3,7 +3,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #141414;
   color: #fff;
-  font-family: "Netflix Sans", "Helvetica Neue", "Segoe UI", Roboto, Ubuntu, sans-serif;
+  font-family: "Helvetica Neue", "Segoe UI", Roboto, Ubuntu, sans-serif;
   margin: 0;
 }
 
@@ -20,7 +20,7 @@ button {
   font: inherit;
 }
 
-.netflix-container {
+.portfolio-container {
   align-items: center;
   background-color: #141414;
   display: flex;
@@ -30,7 +30,7 @@ button {
   position: relative;
 }
 
-.netflix-logo {
+.portfolio-logo {
   color: transparent;
   display: flex;
   font-family: Didot, "Bodoni 72", "Bodoni MT", "Palatino Linotype", Georgia, serif;
@@ -95,7 +95,7 @@ button {
   font-size: 1.14em;
 }
 
-.netflix-logo.playing {
+.portfolio-logo.playing {
   animation: zoomOut 4s ease-in-out forwards;
 }
 
