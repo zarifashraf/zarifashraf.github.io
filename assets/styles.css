@@ -1,5 +1,6 @@
 :root {
   --portfolio-font: Optima, Candara, "Gill Sans", "Trebuchet MS", sans-serif;
+  --display-font: Didot, "Bodoni 72", "Bodoni MT", "Palatino Linotype", Georgia, serif;
 }
 
 body {
@@ -37,7 +38,7 @@ button {
 .portfolio-logo {
   color: transparent;
   display: flex;
-  font-family: var(--portfolio-font);
+  font-family: var(--display-font);
   font-size: clamp(4rem, 14vw, 11rem);
   font-weight: 500;
   gap: 0;
@@ -250,6 +251,7 @@ button {
 
 .navbar-logo {
   color: #e50914;
+  font-family: var(--display-font);
   font-size: 1.55rem;
   font-weight: 900;
   margin-right: 30px;
@@ -407,6 +409,7 @@ button {
 }
 
 .banner-headline {
+  font-family: var(--display-font);
   font-size: clamp(2rem, 4vw, 3.75rem);
   margin: 0 0 10px;
 }
@@ -463,6 +466,7 @@ button {
 .row-title {
   animation: fadeIn 1s ease-in-out;
   color: #fff;
+  font-family: var(--display-font);
   font-size: 1.5rem;
   margin: 0 0 10px;
 }
@@ -546,6 +550,7 @@ button {
   animation: fadeInUp 0.8s ease-in-out both;
   color: #fff;
   display: inline-block;
+  font-family: var(--display-font);
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 40px;
@@ -612,6 +617,7 @@ button {
 
 .timeline-content h2,
 .timeline-content h3 {
+  font-family: var(--display-font);
   margin: 0;
 }
 
@@ -707,6 +713,7 @@ button {
 
 .recommendation-header h3 {
   color: #e50914;
+  font-family: var(--display-font);
   font-size: 1.5rem;
   margin: 0;
 }
@@ -754,6 +761,7 @@ button {
   border-bottom: 2px solid #e50914;
   color: #e6e6e6;
   display: inline-block;
+  font-family: var(--display-font);
   font-size: 1.8rem;
   margin: 30px 0 20px;
   opacity: 0;
@@ -858,6 +866,7 @@ button {
 
 .project-details h3 {
   color: #e50914;
+  font-family: var(--display-font);
   font-size: 1.2rem;
   margin: 0 0 10px;
 }
@@ -941,6 +950,7 @@ button {
 
 .badge-name {
   color: #fff;
+  font-family: var(--display-font);
   font-size: 1.1rem;
   font-weight: 700;
   margin: 0;
@@ -1097,6 +1107,7 @@ button {
 .certifications-title {
   animation: slideDown 0.8s ease-in-out forwards;
   color: #e50914;
+  font-family: var(--display-font);
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
@@ -1121,6 +1132,7 @@ button {
 
 .book-title {
   color: #333;
+  font-family: var(--display-font);
   font-size: 1.2rem;
   margin: 0.5rem 0;
 }
@@ -1157,6 +1169,7 @@ button {
 
 .blog-title {
   color: #333;
+  font-family: var(--display-font);
   font-size: 1.2rem;
   margin: 0 0 0.3rem;
 }
