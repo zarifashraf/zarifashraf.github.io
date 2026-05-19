@@ -315,9 +315,7 @@ button {
 
 .profile-banner {
   align-items: flex-end;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.2)), var(--banner);
-  background-position: center;
-  background-size: cover;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.68), rgba(0, 0, 0, 0.12)), #141414;
   color: #fff;
   display: flex;
   height: 100%;
@@ -328,6 +326,72 @@ button {
   width: 100%;
 }
 
+.banner-name-art {
+  align-items: center;
+  display: flex;
+  gap: 0;
+  height: min(76vw, 720px);
+  opacity: 0.72;
+  perspective: 1000px;
+  pointer-events: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transform-style: preserve-3d;
+  z-index: 0;
+}
+
+.banner-name-letter {
+  filter: drop-shadow(0 0 24px rgba(229, 9, 20, 0.58)) drop-shadow(0 12px 24px rgba(0, 0, 0, 0.55));
+  height: var(--size);
+  margin: 0 var(--space);
+  object-fit: contain;
+  transform: rotateY(var(--rotate)) translateZ(var(--depth)) translateY(var(--lift));
+  transform-style: preserve-3d;
+  width: auto;
+}
+
+.banner-name-letter:nth-child(1) {
+  --depth: 0.18em;
+  --lift: 0;
+  --rotate: 28deg;
+  --space: 0.06em;
+  --size: 100%;
+}
+
+.banner-name-letter:nth-child(2) {
+  --depth: -0.12em;
+  --lift: 0.08em;
+  --rotate: 12deg;
+  --space: -0.02em;
+  --size: 79%;
+}
+
+.banner-name-letter:nth-child(3) {
+  --depth: -0.24em;
+  --lift: 0.16em;
+  --rotate: 0deg;
+  --space: -0.035em;
+  --size: 72%;
+}
+
+.banner-name-letter:nth-child(4) {
+  --depth: -0.12em;
+  --lift: 0.08em;
+  --rotate: -12deg;
+  --space: -0.02em;
+  --size: 79%;
+}
+
+.banner-name-letter:nth-child(5) {
+  --depth: 0.18em;
+  --lift: 0;
+  --rotate: -28deg;
+  --space: 0.06em;
+  --size: 100%;
+}
+
 .banner-content {
   box-sizing: border-box;
   font-weight: 700;
@@ -335,6 +399,7 @@ button {
   padding: 10px 0 50px;
   position: relative;
   width: 100%;
+  z-index: 1;
 }
 
 .banner-headline {
@@ -1363,6 +1428,14 @@ button {
     align-items: center;
     justify-content: center;
     padding: 60px 20px;
+  }
+
+  .banner-name-art {
+    height: min(92vw, 360px);
+    opacity: 0.48;
+    left: 50%;
+    top: 44%;
+    transform: translate(-50%, -50%);
   }
 
   .banner-content {

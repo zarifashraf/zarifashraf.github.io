@@ -3,11 +3,11 @@ const app = document.getElementById("app");
 const asset = (fileName) => `/assets/${fileName}`;
 
 const profileImage = asset("LinkedIn_photo.jpeg");
-const bannerImage = "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1600&q=80";
 const resumeLink = asset("Zarif_Ashraf_Resume.pdf");
 const openingSound = asset("Intro.mp3");
 const linkedinLink = "https://www.linkedin.com/in/zarifash/";
 const splashDuration = 4000;
+const nameArtLetters = ["Z.jpg", "A.jpg", "R.jpg", "I.jpg", "F.jpg"];
 
 const navItems = [
   ["Home", "/browse/"],
@@ -348,7 +348,10 @@ function renderProfile(profileName) {
   const picks = topPicks[current.name];
   app.innerHTML = shell(`
     <section class="profile-page" style="background-image: url('${current.backgroundGif}')">
-      <div class="profile-banner" style="--banner: url('${bannerImage}')">
+      <div class="profile-banner">
+        <div class="banner-name-art" aria-hidden="true">
+          ${nameArtLetters.map((fileName, index) => `<img class="banner-name-letter" src="${asset(fileName)}" alt="${"ZARIF"[index]}">`).join("")}
+        </div>
         <div class="banner-content">
           <h1 class="banner-headline">Hi, I'm Zarif</h1>
           <p class="banner-description">Software engineer focused on backend systems, distributed data pipelines, and cloud-native services. Experience building scalable microservices, designing high-throughput data flows, and improving system reliability across large engineering teams. Strong foundation in Go, Python, Java, JavaScript/TypeScript, and Kubernetes-based deployments. Skilled at driving architectural improvements, automating developer workflows, and enhancing application performance in production environments.</p>
@@ -480,7 +483,7 @@ function renderContact() {
           <a href="${linkedinLink}" target="_blank" rel="noopener noreferrer" class="badge-link">View Profile</a>
         </div>
       </section>
-      <div class="contact-header"><p>I'm always up for a chat or a coffee. Feel free to reach out.</p></div>
+      <div class="contact-header"><p>A good conversation always has its place.</p></div>
       <div class="contact-details">
         <div class="contact-item"><span class="contact-icon">✉</span><a href="mailto:zarif.ashraf@mail.mcgill.ca" class="contact-link">zarif.ashraf@mail.mcgill.ca</a></div>
         <div class="contact-item"><span class="contact-icon">▤</span><a href="${resumeLink}" target="_blank" rel="noopener noreferrer" class="contact-link">View Resume</a></div>
