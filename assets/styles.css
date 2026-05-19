@@ -998,8 +998,10 @@ button {
 .contact-item {
   align-items: center;
   background: #1e1e1e;
+  border: 0;
   border-radius: 25px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  color: inherit;
   display: flex;
   gap: 10px;
   padding: 10px 20px;
@@ -1018,6 +1020,50 @@ button {
 
 .contact-link:hover {
   text-decoration: underline;
+}
+
+.upvote-button {
+  cursor: pointer;
+}
+
+.upvote-button:disabled {
+  cursor: progress;
+  opacity: 0.86;
+}
+
+.upvote-button.upvoted {
+  box-shadow: 0 8px 20px rgba(229, 9, 20, 0.42);
+}
+
+.upvote-count {
+  align-items: center;
+  background: #e50914;
+  border-radius: 999px;
+  color: #fff;
+  display: inline-flex;
+  font-size: 0.85rem;
+  font-weight: 800;
+  justify-content: center;
+  min-width: 2rem;
+  padding: 0.15rem 0.45rem;
+}
+
+.contact-metrics {
+  align-items: center;
+  bottom: 24px;
+  display: flex;
+  gap: 12px;
+  position: fixed;
+  right: 24px;
+  z-index: 45;
+}
+
+.visit-metric {
+  cursor: default;
+}
+
+.visit-metric:hover {
+  transform: none;
 }
 
 .music-page {
@@ -1346,6 +1392,19 @@ button {
 
   .contact-details {
     flex-direction: column;
+  }
+
+  .contact-metrics {
+    bottom: 16px;
+    flex-direction: column;
+    align-items: stretch;
+    left: 16px;
+    right: 16px;
+  }
+
+  .upvote-button,
+  .visit-metric {
+    justify-content: center;
   }
 
   .navbar-logo {

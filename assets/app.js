@@ -8,6 +8,9 @@ const openingSound = asset("Intro.mp3");
 const linkedinLink = "https://www.linkedin.com/in/zarifash/";
 const splashDuration = 4000;
 const nameArtLetters = ["Z.jpg", "A.jpg", "R.jpg", "I.jpg", "F.jpg"];
+const upvoteCounterBase = "https://api.counterapi.dev/v1/zarifashraf-github-io/portfolio-design-upvotes";
+const pageVisitCounterBase = "https://api.counterapi.dev/v1/zarifashraf-github-io/page-visits";
+const pageVisitCountStorageKey = "portfolio-page-visits-count";
 
 const navItems = [
   ["Home", "/browse/"],
@@ -252,6 +255,121 @@ function playOpeningSound() {
   return introAudio.play().then(() => introAudio);
 }
 
+function readCounterValue(data) {
+  return data?.count ?? data?.value ?? data?.data ?? 0;
+}
+
+function counterRequestUrl(url) {
+  return `${url}?t=${Date.now()}`;
+}
+
+function formatCounterValue(count) {
+  return Number.isFinite(Number(count)) ? Number(count).toLocaleString() : "0";
+}
+
+function readStoredPageVisitCount() {
+  const storedCount = Number(window.localStorage.getItem(pageVisitCountStorageKey));
+  return Number.isFinite(storedCount) && storedCount > 0 ? storedCount : 0;
+}
+
+function storePageVisitCount(count) {
+  if (!Number.isFinite(Number(count))) return;
+  window.localStorage.setItem(pageVisitCountStorageKey, String(Number(count)));
+}
+
+function waitFor(promise, timeout = 1500) {
+  return Promise.race([
+    promise.catch(() => undefined),
+    new Promise((resolve) => window.setTimeout(resolve, timeout)),
+  ]);
+}
+
+async function fetchUpvoteCount() {
+  const response = await fetch(counterRequestUrl(upvoteCounterBase), { cache: "no-store" });
+  if (!response.ok) throw new Error("Could not load upvote count");
+  return readCounterValue(await response.json());
+}
+
+async function incrementUpvoteCount() {
+  const response = await fetch(counterRequestUrl(`${upvoteCounterBase}/up`), {
+    cache: "no-store",
+    keepalive: true,
+  });
+  if (!response.ok) throw new Error("Could not save upvote");
+  return readCounterValue(await response.json());
+}
+
+async function fetchPageVisitCount() {
+  const response = await fetch(counterRequestUrl(pageVisitCounterBase), { cache: "no-store" });
+  if (!response.ok) throw new Error("Could not load visit count");
+  return readCounterValue(await response.json());
+}
+
+async function incrementPageVisitCount() {
+  const response = await fetch(`${pageVisitCounterBase}/up`, {
+    cache: "no-store",
+    keepalive: true,
+  });
+  if (!response.ok) throw new Error("Could not save visit");
+  const count = readCounterValue(await response.json());
+  storePageVisitCount(count);
+  return count;
+}
+
+function trackPageVisit() {
+  const knownCount = readStoredPageVisitCount();
+  if (knownCount) storePageVisitCount(knownCount + 1);
+
+  return incrementPageVisitCount().catch(() => {
+    // Analytics should never interrupt the portfolio experience.
+  });
+}
+
+function setUpvoteState(button, count, label = "Liked the design? Upvote") {
+  const countEl = button.querySelector("[data-upvote-count]");
+  const textEl = button.querySelector("[data-upvote-text]");
+
+  countEl.textContent = formatCounterValue(count);
+  textEl.textContent = label;
+  button.disabled = false;
+}
+
+function bindUpvote() {
+  const button = document.querySelector("[data-upvote]");
+  if (!button) return;
+
+  fetchUpvoteCount()
+    .then((count) => setUpvoteState(button, count))
+    .catch(() => {
+      button.querySelector("[data-upvote-count]").textContent = "▲";
+    });
+
+  button.addEventListener("click", async () => {
+    button.disabled = true;
+    try {
+      const count = await incrementUpvoteCount();
+      setUpvoteState(button, count, "Design upvoted");
+    } catch (error) {
+      button.disabled = false;
+      button.querySelector("[data-upvote-text]").textContent = "Try again";
+    }
+  });
+}
+
+function bindPageVisitMetric() {
+  const countEl = document.querySelector("[data-page-visit-count]");
+  if (!countEl) return;
+
+  fetchPageVisitCount()
+    .then((count) => {
+      const freshCount = Math.max(Number(count) || 0, readStoredPageVisitCount());
+      countEl.textContent = formatCounterValue(freshCount);
+    })
+    .catch(() => {
+      countEl.textContent = formatCounterValue(readStoredPageVisitCount());
+    });
+}
+
 function shell(content) {
   return `
     <nav class="navbar" data-navbar>
@@ -302,14 +420,23 @@ function renderSplash() {
   const startButton = document.querySelector("[data-start-splash]");
   let redirectTimer;
   const startSplash = async () => {
+    const pageVisitRequest = trackPageVisit();
     startButton.classList.add("hidden");
     logo.classList.add("playing");
     window.clearTimeout(redirectTimer);
     const audio = await playOpeningSound();
-    redirectTimer = window.setTimeout(() => go("/browse/"), splashDuration + 250);
-    audio.addEventListener("ended", () => {
+    let didOpenBrowse = false;
+    const openBrowse = async () => {
+      if (didOpenBrowse) return;
+      didOpenBrowse = true;
       window.clearTimeout(redirectTimer);
+      await waitFor(pageVisitRequest);
       go("/browse/");
+    };
+
+    redirectTimer = window.setTimeout(openBrowse, splashDuration + 250);
+    audio.addEventListener("ended", () => {
+      openBrowse();
     }, { once: true });
   };
   const resetSplash = () => {
@@ -320,7 +447,7 @@ function renderSplash() {
     startSplash().catch(resetSplash);
   };
 
-  startButton.addEventListener("click", startAfterGesture, { once: true });
+  startButton.addEventListener("click", startAfterGesture);
 }
 
 function renderBrowse() {
@@ -488,6 +615,16 @@ function renderContact() {
         <div class="contact-item"><span class="contact-icon">✉</span><a href="mailto:zarif.ashraf@mail.mcgill.ca" class="contact-link">zarif.ashraf@mail.mcgill.ca</a></div>
         <div class="contact-item"><span class="contact-icon">▤</span><a href="${resumeLink}" target="_blank" rel="noopener noreferrer" class="contact-link">View Resume</a></div>
       </div>
+      <div class="contact-metrics" aria-label="Portfolio metrics">
+        <button class="contact-item upvote-button" type="button" data-upvote>
+          <span class="contact-link" data-upvote-text>Like the design? Upvote</span>
+          <span class="upvote-count" data-upvote-count>▲</span>
+        </button>
+        <div class="contact-item visit-metric">
+          <span class="contact-link">Page Visits</span>
+          <span class="upvote-count" data-page-visit-count>...</span>
+        </div>
+      </div>
     </main>
   `);
 }
@@ -588,11 +725,13 @@ function bindInteractions() {
       overlay.classList.remove("open");
     });
   }
+  bindUpvote();
+  bindPageVisitMetric();
 }
 
 function render() {
   const currentPath = path();
-  if (currentPath === "/") renderSplash();
+  if (currentPath === "/" || currentPath === "/index.html") renderSplash();
   else if (currentPath === "/browse") renderBrowse();
   else if (currentPath.startsWith("/profile/")) renderProfile(currentPath.split("/")[2]);
   else if (currentPath === "/work-experience") renderExperience();
