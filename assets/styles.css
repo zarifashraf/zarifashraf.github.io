@@ -751,14 +751,22 @@ button {
   background-color: #141414;
 }
 
+.projects-grid {
+  grid-template-columns: minmax(280px, 50vw);
+  justify-content: center;
+}
+
 .project-card {
+  max-width: 680px;
   padding: 0;
   text-align: left;
 }
 
 .project-image {
   border-bottom: 2px solid #e50914;
-  height: 200px;
+  aspect-ratio: 4 / 3;
+  display: block;
+  height: auto;
   object-fit: cover;
   transition: transform 0.3s ease;
   width: 100%;
@@ -769,13 +777,40 @@ button {
 }
 
 .project-details {
-  padding: 20px;
+  padding: 16px;
+}
+
+.project-heading {
+  align-items: flex-start;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
 }
 
 .project-details h3 {
   color: #e50914;
   font-size: 1.2rem;
-  margin-bottom: 10px;
+  margin: 0 0 10px;
+}
+
+.project-link-arrow {
+  align-items: center;
+  background: #e50914;
+  border-radius: 50%;
+  color: #fff;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 1rem;
+  font-weight: 800;
+  height: 32px;
+  justify-content: center;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  width: 32px;
+}
+
+.project-card:hover .project-link-arrow {
+  background-color: #ff2a34;
+  transform: translate(2px, -2px);
 }
 
 .project-details p {
@@ -875,8 +910,10 @@ button {
 .contact-details {
   align-items: center;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 20px;
+  justify-content: center;
 }
 
 .contact-item {
@@ -1210,6 +1247,25 @@ button {
 }
 
 @media (max-width: 768px) {
+  .projects-container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .projects-grid {
+    grid-template-columns: 100vw;
+  }
+
+  .project-card {
+    border-radius: 0;
+    max-width: none;
+    width: 100vw;
+  }
+
+  .contact-details {
+    flex-direction: column;
+  }
+
   .navbar-logo {
     font-size: 1.15rem;
     margin-right: auto;

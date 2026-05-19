@@ -14,7 +14,7 @@ const navItems = [
   ["Professional", "/work-experience/"],
   ["Skills", "/skills/"],
   ["Projects", "/projects/"],
-  ["Hire Me", "/contact-me/"],
+  ["Let's talk!", "/contact-me/"],
 ];
 
 const profiles = [
@@ -118,10 +118,41 @@ const skills = {
 };
 
 const projects = [
-  ["Portfolio Platform", "A streaming-inspired personal website with profile-based navigation and animated content rows.", "ReactJS, NodeJS, CSS3", "https://picsum.photos/seed/portfolio/600/400"],
-  ["Research Dashboard", "A dashboard for exploring structured data, metrics, and user-facing summaries.", "Python, PostgreSQL, React", "https://picsum.photos/seed/dashboard/600/400"],
-  ["Course Planner", "A planning tool that helps students compare paths and keep track of milestones.", "TypeScript, GraphQL, GitHub", "https://picsum.photos/seed/planner/600/400"],
-  ["Automation Toolkit", "Small utilities for repeatable workflows, reports, and data transformations.", "Python, Docker, CI/CD", "https://picsum.photos/seed/automation/600/400"],
+  {
+    title: "Library Management System Web App",
+    description: "Designed and delivered a dynamic library management platform in collaboration with a six-person agile team. The application was modeled with UML, implemented with Spring, Java, Gradle, and Vue.js, and supported by automated testing, backlog management, software requirements tracking, Git workflows, and GitHub Actions.",
+    tech: "UML, Gradle, Spring, Java, Vue.js, GitHub Actions",
+    image: asset("library.jfif"),
+    url: "https://github.com/McGill-ECSE321-Fall2021/project-group-09",
+  },
+  {
+    title: "EV3 Robot",
+    description: "Designed and built a color-detecting sorting robot with a six-person team, combining EV3 Mindstorms hardware with Python-based control software. Led the hardware design, documentation, and testing workstreams while collaborating on the software implementation through Git.",
+    tech: "Python, EV3 Mindstorms, Hardware Design, Git",
+    image: asset("robot.webp"),
+    url: "https://www.linkedin.com/in/zarifash/overlay/Project/1151230804/treasury?profileId=ACoAACpT-PIBXqz2U5aA92s9ho_l1StBnyFc-mw",
+  },
+  {
+    title: "Colosseum Survival AI Game",
+    description: "Developed a high-performing AI player for a survival strategy game by implementing and refining search algorithms including MCTS, minimax, and alpha-beta pruning. The final agent defeated 99% of opponents faced while completing moves in one-tenth of the average runtime and using one-fifteenth of the average memory of competing AI players.",
+    tech: "AI, MCTS, Minimax, Alpha-Beta Pruning, Game Strategy",
+    image: asset("colosseum.jpg"),
+    url: "https://github.com/zarifashraf/Colosseum-Survival-AI-Game",
+  },
+  {
+    title: "Online Trivia Web App",
+    description: "Built a daily trivia web application with a polished quiz experience, persistent backend, and leaderboard functionality for tracking user performance over time.",
+    tech: "React, JavaScript, HTML, CSS",
+    image: asset("trivia.jpg"),
+    url: "https://github.com/saikz72/quiz-app",
+  },
+  {
+    title: "OS Shell",
+    description: "Built a low-level command-line operating system shell in C with Makefile-based builds. The shell supports core Linux-style file system commands and provides hands-on experience with process control, command parsing, and systems programming fundamentals.",
+    tech: "C, Makefile, Linux, CLI, Systems Programming",
+    image: asset("os.webp"),
+    url: "https://github.com/zarifashraf/OS-Shell",
+  },
 ];
 
 const books = [
@@ -252,7 +283,7 @@ function icon(label) {
     Professional: "▣",
     Skills: "◈",
     Projects: "▤",
-    "Hire Me": "✉",
+    "Let's talk!": "✉",
   };
   return icons[label] || "•";
 }
@@ -418,15 +449,18 @@ function renderProjects() {
   app.innerHTML = shell(`
     <main class="projects-container">
       <div class="projects-grid">
-        ${projects.map(([title, description, tech, image], index) => `
-          <article class="project-card" style="--delay:${0.12 * index}s">
-            <img class="project-image" src="${image}" alt="${title}">
+        ${projects.map((project, index) => `
+          <a class="project-card" href="${project.url}" target="_blank" rel="noopener noreferrer" style="--delay:${0.12 * index}s">
+            <img class="project-image" src="${project.image}" alt="${project.title}">
             <div class="project-details">
-              <h3>${title}</h3>
-              <p>${description}</p>
-              <div class="tech-used">${tech.split(", ").map((item) => `<span class="tech-badge">${item}</span>`).join("")}</div>
+              <div class="project-heading">
+                <h3>${project.title}</h3>
+                <span class="project-link-arrow" aria-hidden="true">↗</span>
+              </div>
+              <p>${project.description}</p>
+              <div class="tech-used">${project.tech.split(", ").map((item) => `<span class="tech-badge">${item}</span>`).join("")}</div>
             </div>
-          </article>
+          </a>
         `).join("")}
       </div>
     </main>
@@ -449,6 +483,7 @@ function renderContact() {
       <div class="contact-header"><p>I'm always up for a chat or a coffee. Feel free to reach out.</p></div>
       <div class="contact-details">
         <div class="contact-item"><span class="contact-icon">✉</span><a href="mailto:zarif.ashraf@mail.mcgill.ca" class="contact-link">zarif.ashraf@mail.mcgill.ca</a></div>
+        <div class="contact-item"><span class="contact-icon">▤</span><a href="${resumeLink}" target="_blank" rel="noopener noreferrer" class="contact-link">View Resume</a></div>
       </div>
     </main>
   `);
