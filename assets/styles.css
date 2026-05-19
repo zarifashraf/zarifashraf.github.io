@@ -1,9 +1,13 @@
+:root {
+  --portfolio-font: Optima, Candara, "Gill Sans", "Trebuchet MS", sans-serif;
+}
+
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #141414;
   color: #fff;
-  font-family: "Helvetica Neue", "Segoe UI", Roboto, Ubuntu, sans-serif;
+  font-family: var(--portfolio-font);
   margin: 0;
 }
 
@@ -33,7 +37,7 @@ button {
 .portfolio-logo {
   color: transparent;
   display: flex;
-  font-family: Didot, "Bodoni 72", "Bodoni MT", "Palatino Linotype", Georgia, serif;
+  font-family: var(--portfolio-font);
   font-size: clamp(4rem, 14vw, 11rem);
   font-weight: 500;
   gap: 0;
@@ -335,7 +339,7 @@ button {
   perspective: 1000px;
   pointer-events: none;
   position: absolute;
-  left: 50%;
+  left: 60%;
   top: 50%;
   transform: translate(-50%, -50%);
   transform-style: preserve-3d;
@@ -1007,7 +1011,7 @@ button {
 }
 
 .music-page {
-  font-family: Arial, sans-serif;
+  font-family: var(--portfolio-font);
 }
 
 .quote {
