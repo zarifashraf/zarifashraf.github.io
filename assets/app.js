@@ -5,7 +5,7 @@ const asset = (fileName) => `/assets/${fileName}`;
 const profileImage = asset("LinkedIn_photo.jpeg");
 const resumeLink = asset("Zarif_Ashraf_Resume.pdf");
 const openingSound = asset("Intro.mp3");
-const vinylTrack = asset("Fragments_of_time.mp3");
+const vinylTrack = asset("Fragments_of_Time.mp3");
 const vinylSong = {
   title: "Fragments of Time",
   artist: "Daft Punk, Todd Edwards",
