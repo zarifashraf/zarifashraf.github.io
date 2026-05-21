@@ -277,6 +277,149 @@ button {
   color: #e50914;
 }
 
+.vinyl-controls {
+  align-items: center;
+  display: flex;
+  margin-right: 18px;
+}
+
+.vinyl-credit {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+  min-width: 170px;
+  padding: 2px 4px 4px;
+  text-align: left;
+}
+
+.vinyl-song,
+.vinyl-artist {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vinyl-song {
+  color: #fff;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.vinyl-artist {
+  color: #b3b3b3;
+  font-size: 0.72rem;
+  margin-top: 3px;
+}
+
+.vinyl-deck {
+  align-items: center;
+  display: flex;
+  height: 30px;
+  justify-content: center;
+  position: relative;
+  width: 30px;
+}
+
+.vinyl-deck::after {
+  content: "";
+  height: 14px;
+  left: -42px;
+  position: absolute;
+  top: 100%;
+  width: 150px;
+}
+
+.vinyl-disc {
+  background:
+    radial-gradient(circle at center, #e50914 0 9%, #f5f5f5 10% 15%, #111 16% 26%, #242424 27% 38%, #101010 39% 58%, #2d2d2d 59% 67%, #050505 68% 100%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.05), 0 3px 10px rgba(0, 0, 0, 0.4);
+  display: block;
+  height: 30px;
+  position: relative;
+  transition: transform 0.2s ease;
+  width: 30px;
+}
+
+.vinyl-disc::after {
+  background: rgba(255, 255, 255, 0.42);
+  content: "";
+  height: 1px;
+  left: 50%;
+  position: absolute;
+  top: 5px;
+  transform: translateX(-50%);
+  width: 8px;
+}
+
+.vinyl-deck.playing .vinyl-disc {
+  animation: vinylSpin 1.2s linear infinite;
+}
+
+.vinyl-actions {
+  align-items: stretch;
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.42);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  padding: 10px;
+  pointer-events: auto;
+  position: absolute;
+  right: -8px;
+  top: calc(100% + 10px);
+  transform: translateY(-4px);
+  transition: opacity 0.2s ease 1s, transform 0.2s ease 1s, visibility 0s linear 1.2s;
+  visibility: hidden;
+  width: max-content;
+  z-index: 50;
+}
+
+.vinyl-deck:hover .vinyl-actions,
+.vinyl-deck:focus-within .vinyl-actions,
+.vinyl-actions:hover {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0s;
+  visibility: visible;
+}
+
+.vinyl-action-row {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.vinyl-action {
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 800;
+  min-height: 28px;
+  padding: 0 9px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.vinyl-action:hover,
+.vinyl-action:focus-visible {
+  background: #e50914;
+  outline: none;
+}
+
+@keyframes vinylSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .profile-icon {
   border: 0;
   border-radius: 50%;
@@ -1410,6 +1553,42 @@ button {
   .navbar-logo {
     font-size: 1.15rem;
     margin-right: auto;
+  }
+
+  .vinyl-controls {
+    margin-right: 12px;
+  }
+
+  .vinyl-credit {
+    min-width: 138px;
+  }
+
+  .vinyl-song {
+    font-size: 0.74rem;
+  }
+
+  .vinyl-artist {
+    font-size: 0.64rem;
+  }
+
+  .vinyl-deck {
+    height: 24px;
+    width: 24px;
+  }
+
+  .vinyl-disc {
+    height: 24px;
+    width: 24px;
+  }
+
+  .vinyl-actions {
+    right: -6px;
+  }
+
+  .vinyl-action {
+    font-size: 0.66rem;
+    min-height: 26px;
+    padding: 0 7px;
   }
 
   .navbar-links {

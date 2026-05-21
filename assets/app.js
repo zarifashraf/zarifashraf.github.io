@@ -5,12 +5,18 @@ const asset = (fileName) => `/assets/${fileName}`;
 const profileImage = asset("LinkedIn_photo.jpeg");
 const resumeLink = asset("Zarif_Ashraf_Resume.pdf");
 const openingSound = asset("Intro.mp3");
+const vinylTrack = asset("Fragments_of_time.mp3");
+const vinylSong = {
+  title: "Fragments of Time",
+  artist: "Daft Punk, Todd Edwards",
+};
 const linkedinLink = "https://www.linkedin.com/in/zarifash/";
 const splashDuration = 4000;
 const nameArtLetters = ["Z.jpg", "A.jpg", "R.jpg", "I.jpg", "F.jpg"];
 const upvoteCounterBase = "https://api.counterapi.dev/v1/zarifashraf-github-io/portfolio-design-upvotes";
 const pageVisitCounterBase = "https://api.counterapi.dev/v1/zarifashraf-github-io/page-visits";
 const pageVisitCountStorageKey = "portfolio-page-visits-count";
+const selectedProfileStorageKey = "portfolio-selected-profile";
 
 const navItems = [
   ["Home", "/browse/"],
@@ -40,29 +46,61 @@ const profiles = [
 
 const topPicks = {
   recruiter: [
-    ["Skills", "/skills/", "https://picsum.photos/seed/skills/250/200"],
-    ["Experience", "/work-experience/", "https://picsum.photos/seed/workexperience/250/200"],
-    ["Certifications", "/certifications/", "https://picsum.photos/seed/certifications/250/200"],
-    ["Recommendations", "/recommendations/", "https://picsum.photos/seed/recommendations/250/200"],
-    ["Projects", "/projects/", "https://picsum.photos/seed/projects/250/200"],
-    ["Contact Me", "/contact-me/", "https://picsum.photos/seed/contact/250/200"],
+    ["Skills", "/skills/", asset("Skills.jpg")],
+    ["Experience", "/work-experience/", asset("Experience.jpg")],
+    ["Certifications", "/certifications/", asset("Certifications.jpg")],
+    ["Recommendations", "/recommendations/", asset("Recommendations.jpg")],
+    ["Projects", "/projects/", asset("Projects.jpg")],
   ],
   developer: [
-    ["Skills", "/skills/", "https://picsum.photos/seed/coding/250/200"],
-    ["Projects", "/projects/", "https://picsum.photos/seed/development/250/200"],
-    ["Certifications", "/certifications/", "https://picsum.photos/seed/badge/250/200"],
-    ["Experience", "/work-experience/", "https://picsum.photos/seed/work/250/200"],
-    ["Recommendations", "/recommendations/", "https://picsum.photos/seed/networking/250/200"],
-    ["Contact Me", "/contact-me/", "https://picsum.photos/seed/connect/250/200"],
+    ["Skills", "/skills/", asset("Skills.jpg")],
+    ["Projects", "/projects/", asset("Projects.jpg")],
+    ["Certifications", "/certifications/", asset("Certifications.jpg")],
+    ["Experience", "/work-experience/", asset("Experience.jpg")],
+    ["Recommendations", "/recommendations/", asset("Recommendations.jpg")],
   ],
   stalker: [
-    ["Recommendations", "/recommendations/", "https://picsum.photos/seed/networking/250/200"],
-    ["Contact Me", "/contact-me/", "https://picsum.photos/seed/call/250/200"],
-    ["Projects", "/projects/", "https://picsum.photos/seed/planning/250/200"],
-    ["Experience", "/work-experience/", "https://picsum.photos/seed/resume/250/200"],
-    ["Certifications", "/certifications/", "https://picsum.photos/seed/achievements/250/200"],
+    ["Recommendations", "/recommendations/", asset("Recommendations.jpg")],
+    ["Projects", "/projects/", asset("Projects.jpg")],
+    ["Experience", "/work-experience/", asset("Experience.jpg")],
+    ["Certifications", "/certifications/", asset("Certifications.jpg")],
   ],
 };
+
+function isValidProfileName(profileName) {
+  return profiles.some((profile) => profile.name === profileName);
+}
+
+function rememberProfile(profileName) {
+  if (!isValidProfileName(profileName)) return;
+  window.localStorage.setItem(selectedProfileStorageKey, profileName);
+}
+
+function storedProfileName() {
+  const profileName = window.localStorage.getItem(selectedProfileStorageKey);
+  return isValidProfileName(profileName) ? profileName : "";
+}
+
+function currentProfileName() {
+  const profileMatch = path().match(/^\/profile\/([^/]+)$/);
+  const profileName = profileMatch?.[1];
+  return isValidProfileName(profileName) ? profileName : storedProfileName();
+}
+
+function profileHomePath() {
+  const profileName = currentProfileName();
+  return profileName ? `/profile/${profileName}/` : "/browse/";
+}
+
+function navUrl(label, url) {
+  return label === "Home" ? profileHomePath() : url;
+}
+
+function isActiveNav(label, url) {
+  const currentPath = path();
+  const normalizedUrl = url.replace(/\/+$/, "") || "/";
+  return label === "Home" ? currentPath === normalizedUrl : currentPath === normalizedUrl;
+}
 
 const skills = {
   Languages: [
@@ -236,11 +274,22 @@ function path() {
   return window.location.pathname.replace(/\/+$/, "") || "/";
 }
 
+function isUserSelectionPath(route) {
+  const normalizedRoute = route.replace(/\/+$/, "") || "/";
+  return normalizedRoute === "/browse";
+}
+
 function go(to) {
-  window.location.href = to;
+  if (isUserSelectionPath(to)) stopVinylAudio();
+
+  window.history.pushState({}, "", to);
+  render();
+  window.scrollTo(0, 0);
 }
 
 let introAudio;
+let vinylAudio;
+let vinylEventsBound = false;
 
 function playOpeningSound() {
   if (introAudio) {
@@ -257,6 +306,23 @@ function playOpeningSound() {
 
 function readCounterValue(data) {
   return data?.count ?? data?.value ?? data?.data ?? 0;
+}
+
+function getVinylAudio() {
+  if (!vinylAudio) {
+    vinylAudio = new Audio(vinylTrack);
+    vinylAudio.preload = "auto";
+    vinylAudio.volume = 0.75;
+  }
+
+  return vinylAudio;
+}
+
+function stopVinylAudio() {
+  if (!vinylAudio) return;
+  vinylAudio.pause();
+  vinylAudio.currentTime = 0;
+  setVinylState(false);
 }
 
 function counterRequestUrl(url) {
@@ -370,16 +436,93 @@ function bindPageVisitMetric() {
     });
 }
 
+function setVinylState(isPlaying) {
+  document.querySelectorAll(".vinyl-deck").forEach((deck) => {
+    deck.classList.toggle("playing", isPlaying);
+  });
+  document.querySelectorAll("[data-vinyl-toggle]").forEach((button) => {
+    button.setAttribute("aria-label", isPlaying ? "Pause vinyl audio" : "Play vinyl audio");
+    button.setAttribute("aria-pressed", String(isPlaying));
+  });
+}
+
+function bindVinylAudio() {
+  const toggles = document.querySelectorAll("[data-vinyl-toggle]");
+  const pauses = document.querySelectorAll("[data-vinyl-pause]");
+  const rewinds = document.querySelectorAll("[data-vinyl-rewind]");
+  if (!toggles.length && !pauses.length && !rewinds.length) return;
+
+  const audio = getVinylAudio();
+  setVinylState(!audio.paused);
+
+  toggles.forEach((button) => {
+    button.addEventListener("click", async () => {
+      try {
+        if (audio.paused) {
+          await audio.play();
+          setVinylState(true);
+        } else {
+          audio.pause();
+          setVinylState(false);
+        }
+      } catch (error) {
+        setVinylState(false);
+      }
+    });
+  });
+
+  pauses.forEach((button) => {
+    button.addEventListener("click", () => {
+      audio.pause();
+      setVinylState(false);
+    });
+  });
+
+  rewinds.forEach((button) => {
+    button.addEventListener("click", () => {
+      audio.currentTime = 0;
+      if (!audio.paused) {
+        audio.play().catch(() => setVinylState(false));
+      }
+    });
+  });
+
+  if (!vinylEventsBound) {
+    audio.addEventListener("play", () => setVinylState(true));
+    audio.addEventListener("pause", () => setVinylState(false));
+    audio.addEventListener("ended", () => setVinylState(false));
+    vinylEventsBound = true;
+  }
+}
+
 function shell(content) {
+  const navigation = navItems.map(([label, url]) => [label, navUrl(label, url)]);
+
   return `
     <nav class="navbar" data-navbar>
       <div class="navbar-left">
         <a class="navbar-logo" href="/browse/">Zarif</a>
         <ul class="navbar-links">
-          ${navItems.map(([label, url]) => `<li><a class="${path() === url.replace(/\/+$/, "") ? "active" : ""}" href="${url}">${label}</a></li>`).join("")}
+          ${navigation.map(([label, url]) => `<li><a class="${isActiveNav(label, url) ? "active" : ""}" href="${url}">${label}</a></li>`).join("")}
         </ul>
       </div>
       <div class="navbar-right">
+        <div class="vinyl-controls" aria-label="Vinyl audio controls">
+          <div class="vinyl-deck">
+            <span class="vinyl-disc" aria-hidden="true"></span>
+            <div class="vinyl-actions" aria-label="Vinyl playback actions">
+              <div class="vinyl-credit" aria-label="${vinylSong.title} by ${vinylSong.artist}">
+                <span class="vinyl-song">${vinylSong.title}</span>
+                <span class="vinyl-artist">${vinylSong.artist}</span>
+              </div>
+              <div class="vinyl-action-row">
+                <button class="vinyl-action" type="button" aria-label="Play vinyl audio" aria-pressed="false" data-vinyl-toggle>Play</button>
+                <button class="vinyl-action" type="button" aria-label="Pause vinyl audio" data-vinyl-pause>Pause</button>
+                <button class="vinyl-action" type="button" aria-label="Rewind vinyl audio" data-vinyl-rewind>Rewind</button>
+              </div>
+            </div>
+          </div>
+        </div>
         <button class="hamburger" type="button" aria-label="Open menu" data-open-sidebar><div></div><div></div><div></div></button>
         <button class="profile-icon" type="button" aria-label="Choose profile" data-go="/browse/"><img src="${profileImage}" alt="Profile"></button>
       </div>
@@ -388,7 +531,7 @@ function shell(content) {
     <aside class="sidebar" data-sidebar>
       <div class="sidebar-logo">Zarif</div>
       <ul>
-        ${navItems.map(([label, url]) => `<li><a href="${url}">${icon(label)} ${label}</a></li>`).join("")}
+        ${navigation.map(([label, url]) => `<li><a href="${url}">${icon(label)} ${label}</a></li>`).join("")}
       </ul>
     </aside>
     <div class="content">${content}</div>
@@ -472,6 +615,7 @@ function renderProfile(profileName) {
     renderNotFound();
     return;
   }
+  rememberProfile(current.name);
   const picks = topPicks[current.name];
   app.innerHTML = shell(`
     <section class="profile-page" style="background-image: url('${current.backgroundGif}')">
@@ -703,6 +847,15 @@ function bindInteractions() {
   document.querySelectorAll("[data-go]").forEach((el) => {
     el.addEventListener("click", () => go(el.getAttribute("data-go")));
   });
+  document.querySelectorAll('a[href^="/"]').forEach((link) => {
+    const href = link.getAttribute("href");
+    if (!href || link.target || link.hasAttribute("download") || href.startsWith("/assets/")) return;
+
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      go(href);
+    });
+  });
   document.querySelectorAll("[data-open]").forEach((el) => {
     el.addEventListener("click", () => window.open(el.getAttribute("data-open"), "_blank"));
   });
@@ -727,12 +880,16 @@ function bindInteractions() {
   }
   bindUpvote();
   bindPageVisitMetric();
+  bindVinylAudio();
 }
 
 function render() {
   const currentPath = path();
   if (currentPath === "/" || currentPath === "/index.html") renderSplash();
-  else if (currentPath === "/browse") renderBrowse();
+  else if (currentPath === "/browse") {
+    stopVinylAudio();
+    renderBrowse();
+  }
   else if (currentPath.startsWith("/profile/")) renderProfile(currentPath.split("/")[2]);
   else if (currentPath === "/work-experience") renderExperience();
   else if (currentPath === "/recommendations") renderRecommendations();
@@ -746,5 +903,7 @@ function render() {
   else renderNotFound();
   bindInteractions();
 }
+
+window.addEventListener("popstate", render);
 
 render();
