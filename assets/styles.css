@@ -3,6 +3,39 @@
   --display-font: Didot, "Bodoni 72", "Bodoni MT", "Palatino Linotype", Georgia, serif;
 }
 
+.timeline-content {
+  background: #1e1e1e !important;
+  border: 1px solid rgba(229, 9, 20, 0.24) !important;
+  border-left: 4px solid #e50914 !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.38) !important;
+  color: #f5f5f5 !important;
+}
+
+.timeline-content:hover {
+  border-color: rgba(229, 9, 20, 0.62) !important;
+  box-shadow: 0 14px 30px rgba(229, 9, 20, 0.18) !important;
+}
+
+.timeline-content h2 {
+  color: #fff !important;
+}
+
+.timeline-content h3,
+.timeline-meta {
+  color: #e50914 !important;
+}
+
+.timeline-summary {
+  color: #d6d6d6 !important;
+}
+
+.timeline-icon {
+  background: #e50914 !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 18px rgba(229, 9, 20, 0.28) !important;
+}
+
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -417,6 +450,175 @@ button {
 @keyframes vinylSpin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+.theme-toggle {
+  background: rgba(20, 20, 20, 0.76);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 800;
+  margin-right: 14px;
+  min-height: 34px;
+  padding: 0 12px;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus-visible {
+  background: rgba(229, 9, 20, 0.84);
+  border-color: rgba(229, 9, 20, 0.95);
+  color: #fff;
+  outline: none;
+  transform: translateY(-1px);
+}
+
+body.light-mode {
+  background: #f3eadc;
+  color: #161616;
+}
+
+body.light-mode .browse-container,
+body.light-mode .content,
+body.light-mode .timeline-container,
+body.light-mode .skills-page,
+body.light-mode .projects-container,
+body.light-mode .recommendations-page,
+body.light-mode .certifications-container,
+body.light-mode .contact-container,
+body.light-mode .music-page,
+body.light-mode .reading-container,
+body.light-mode .blogs-container,
+body.light-mode .not-found {
+  background: #f3eadc !important;
+  color: #161616 !important;
+}
+
+body.light-mode .navbar,
+body.light-mode .navbar.scrolled,
+body.light-mode .sidebar {
+  background-color: rgba(244, 235, 220, 0.96) !important;
+  background-image: linear-gradient(180deg, rgba(244, 235, 220, 0.96) 10%, rgba(244, 235, 220, 0.74));
+  color: #161616;
+}
+
+body.light-mode .navbar-links a,
+body.light-mode .sidebar a,
+body.light-mode .who-is-watching,
+body.light-mode .row-title,
+body.light-mode .timeline-title,
+body.light-mode .skills-title,
+body.light-mode .projects-title,
+body.light-mode .recommendations-title,
+body.light-mode .certifications-title,
+body.light-mode .reading-title,
+body.light-mode .blogs-title {
+  color: #161616 !important;
+}
+
+body.light-mode .navbar-links a:hover,
+body.light-mode .navbar-links a.active,
+body.light-mode .navbar-logo,
+body.light-mode .sidebar-logo {
+  color: #b20710 !important;
+}
+
+body.light-mode .theme-toggle,
+body.light-mode .vinyl-action,
+body.light-mode .vinyl-actions,
+body.light-mode .vinyl-controls,
+body.light-mode .contact-item,
+body.light-mode .skill-card,
+body.light-mode .timeline-content,
+body.light-mode .project-card,
+body.light-mode .recommendation-card,
+body.light-mode .certification-card,
+body.light-mode .book-card,
+body.light-mode .blog-card,
+body.light-mode .album-card,
+body.light-mode .genre-card,
+body.light-mode .linkedin-badge-custom {
+  background: #fbf4e7 !important;
+  border-color: rgba(178, 7, 16, 0.24) !important;
+  color: #161616 !important;
+}
+
+body.light-mode .skill-card:hover,
+body.light-mode .timeline-content:hover,
+body.light-mode .project-card:hover,
+body.light-mode .recommendation-card:hover,
+body.light-mode .certification-card:hover,
+body.light-mode .book-card:hover,
+body.light-mode .blog-card:hover {
+  border-color: rgba(178, 7, 16, 0.58) !important;
+  box-shadow: 0 14px 30px rgba(178, 7, 16, 0.16) !important;
+}
+
+body.light-mode .skill-description,
+body.light-mode .timeline-summary,
+body.light-mode .project-details p,
+body.light-mode .recommendation-quote,
+body.light-mode .reading-intro,
+body.light-mode .blogs-intro,
+body.light-mode .contact-header p,
+body.light-mode .badge-description,
+body.light-mode .badge-company,
+body.light-mode .vinyl-artist {
+  color: #444 !important;
+}
+
+body.light-mode .skill-card h3,
+body.light-mode .timeline-content h2,
+body.light-mode .project-details h3,
+body.light-mode .recommendation-card h3,
+body.light-mode .certification-card h2,
+body.light-mode .book-title,
+body.light-mode .blog-title,
+body.light-mode .badge-name,
+body.light-mode .vinyl-song {
+  color: #161616 !important;
+}
+
+body.light-mode .skill-category-title,
+body.light-mode .skill-card h4,
+body.light-mode .timeline-content h3,
+body.light-mode .timeline-meta,
+body.light-mode .tech-badge,
+body.light-mode .recommendation-title,
+body.light-mode .issued-date,
+body.light-mode .badge-title,
+body.light-mode .contact-icon {
+  color: #b20710 !important;
+}
+
+body.light-mode .tech-badge,
+body.light-mode .upvote-count,
+body.light-mode .timeline-icon {
+  background: #b20710 !important;
+  color: #fff !important;
+}
+
+body.light-mode .overlay {
+  background: linear-gradient(180deg, transparent, rgba(251, 244, 231, 0.92)) !important;
+}
+
+body.light-mode .pick-label {
+  color: #161616 !important;
+}
+
+body.light-mode .profile-page {
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .theme-toggle {
+    font-size: 0.68rem;
+    margin-right: 10px;
+    min-height: 30px;
+    padding: 0 9px;
   }
 }
 

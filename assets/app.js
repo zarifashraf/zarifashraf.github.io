@@ -17,6 +17,8 @@ const upvoteCounterBase = "https://api.counterapi.dev/v1/zarifashraf-github-io/p
 const pageVisitCounterBase = "https://api.counterapi.dev/v1/zarifashraf-github-io/page-visits";
 const pageVisitCountStorageKey = "portfolio-page-visits-count";
 const selectedProfileStorageKey = "portfolio-selected-profile";
+const themeStorageKey = "portfolio-theme";
+const lightThemeClass = "light-mode";
 
 const navItems = [
   ["Home", "/browse/"],
@@ -274,6 +276,32 @@ function path() {
   return window.location.pathname.replace(/\/+$/, "") || "/";
 }
 
+function savedTheme() {
+  return window.localStorage.getItem(themeStorageKey) === "light" ? "light" : "dark";
+}
+
+function updateThemeControls(theme) {
+  const isLight = theme === "light";
+
+  document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+    button.setAttribute("aria-label", isLight ? "Switch to dark mode" : "Switch to light mode");
+    button.setAttribute("aria-pressed", String(isLight));
+    const label = button.querySelector("[data-theme-label]");
+    if (label) label.textContent = isLight ? "Dark Mode" : "Light Mode";
+  });
+}
+
+function applyTheme(theme) {
+  const normalizedTheme = theme === "light" ? "light" : "dark";
+  document.body.classList.toggle(lightThemeClass, normalizedTheme === "light");
+  window.localStorage.setItem(themeStorageKey, normalizedTheme);
+  updateThemeControls(normalizedTheme);
+}
+
+function applySavedTheme() {
+  document.body.classList.toggle(lightThemeClass, savedTheme() === "light");
+}
+
 function isUserSelectionPath(route) {
   const normalizedRoute = route.replace(/\/+$/, "") || "/";
   return normalizedRoute === "/browse";
@@ -495,6 +523,16 @@ function bindVinylAudio() {
   }
 }
 
+function bindThemeToggle() {
+  updateThemeControls(savedTheme());
+
+  document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+    button.addEventListener("click", () => {
+      applyTheme(savedTheme() === "light" ? "dark" : "light");
+    });
+  });
+}
+
 function shell(content) {
   const navigation = navItems.map(([label, url]) => [label, navUrl(label, url)]);
 
@@ -507,6 +545,9 @@ function shell(content) {
         </ul>
       </div>
       <div class="navbar-right">
+        <button class="theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="false" data-theme-toggle>
+          <span data-theme-label>Light Mode</span>
+        </button>
         <div class="vinyl-controls" aria-label="Vinyl audio controls">
           <div class="vinyl-deck">
             <span class="vinyl-disc" aria-hidden="true"></span>
@@ -881,6 +922,7 @@ function bindInteractions() {
   bindUpvote();
   bindPageVisitMetric();
   bindVinylAudio();
+  bindThemeToggle();
 }
 
 function render() {
@@ -905,5 +947,5 @@ function render() {
 }
 
 window.addEventListener("popstate", render);
-
+applySavedTheme();
 render();
