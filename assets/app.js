@@ -17,8 +17,8 @@ const upvoteCounterBase = "https://api.counterapi.dev/v1/zarifashraf-github-io/p
 const pageVisitCounterBase = "https://api.counterapi.dev/v1/zarifashraf-github-io/page-visits";
 const pageVisitCountStorageKey = "portfolio-page-visits-count";
 const selectedProfileStorageKey = "portfolio-selected-profile";
-const themeStorageKey = "portfolio-theme";
 const lightThemeClass = "light-mode";
+const profileHomeClass = "profile-home-page";
 
 const navItems = [
   ["Home", "/browse/"],
@@ -277,7 +277,7 @@ function path() {
 }
 
 function savedTheme() {
-  return window.localStorage.getItem(themeStorageKey) === "light" ? "light" : "dark";
+  return document.body.classList.contains(lightThemeClass) ? "light" : "dark";
 }
 
 function updateThemeControls(theme) {
@@ -286,20 +286,19 @@ function updateThemeControls(theme) {
   document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
     button.setAttribute("aria-label", isLight ? "Switch to dark mode" : "Switch to light mode");
     button.setAttribute("aria-pressed", String(isLight));
-    const label = button.querySelector("[data-theme-label]");
-    if (label) label.textContent = isLight ? "Dark Mode" : "Light Mode";
+    const icon = button.querySelector("[data-theme-icon]");
+    if (icon) icon.textContent = isLight ? "☾" : "☀";
   });
 }
 
 function applyTheme(theme) {
   const normalizedTheme = theme === "light" ? "light" : "dark";
   document.body.classList.toggle(lightThemeClass, normalizedTheme === "light");
-  window.localStorage.setItem(themeStorageKey, normalizedTheme);
   updateThemeControls(normalizedTheme);
 }
 
 function applySavedTheme() {
-  document.body.classList.toggle(lightThemeClass, savedTheme() === "light");
+  document.body.classList.remove(lightThemeClass);
 }
 
 function isUserSelectionPath(route) {
@@ -546,7 +545,7 @@ function shell(content) {
       </div>
       <div class="navbar-right">
         <button class="theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="false" data-theme-toggle>
-          <span data-theme-label>Light Mode</span>
+          <span data-theme-icon aria-hidden="true">☀</span>
         </button>
         <div class="vinyl-controls" aria-label="Vinyl audio controls">
           <div class="vinyl-deck">
@@ -927,6 +926,8 @@ function bindInteractions() {
 
 function render() {
   const currentPath = path();
+  document.body.classList.toggle(profileHomeClass, currentPath.startsWith("/profile/"));
+
   if (currentPath === "/" || currentPath === "/index.html") renderSplash();
   else if (currentPath === "/browse") {
     stopVinylAudio();
