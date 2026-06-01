@@ -713,6 +713,27 @@ body.light-mode.profile-home-page .banner-content:focus-within {
   max-width: 860px !important;
 }
 
+.top-picks-row .row-title,
+.pick-label {
+  font-family: var(--portfolio-font) !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+.top-picks-row .row-title {
+  color: #ccc !important;
+  font-size: 1.2rem !important;
+  line-height: 1.55 !important;
+}
+
+.pick-label {
+  color: #fff !important;
+  font-size: 1.2rem !important;
+  line-height: 1.35 !important;
+}
+
 @media (max-width: 768px) {
   .banner-content {
     max-width: none !important;
