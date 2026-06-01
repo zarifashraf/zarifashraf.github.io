@@ -48,25 +48,48 @@ const profiles = [
 
 const topPicks = {
   recruiter: [
-    ["Skills", "/skills/", asset("Skills.jpg")],
-    ["Experience", "/work-experience/", asset("Experience.jpg")],
-    ["Certifications", "/certifications/", asset("Certifications.jpg")],
-    ["Recommendations", "/recommendations/", asset("Recommendations.jpg")],
-    ["Projects", "/projects/", asset("Projects.jpg")],
+    ["Skills", "/skills/"],
+    ["Experience", "/work-experience/"],
+    ["Certifications", "/certifications/"],
+    ["Recommendations", "/recommendations/"],
+    ["Projects", "/projects/"],
   ],
   developer: [
-    ["Skills", "/skills/", asset("Skills.jpg")],
-    ["Projects", "/projects/", asset("Projects.jpg")],
-    ["Certifications", "/certifications/", asset("Certifications.jpg")],
-    ["Experience", "/work-experience/", asset("Experience.jpg")],
-    ["Recommendations", "/recommendations/", asset("Recommendations.jpg")],
+    ["Skills", "/skills/"],
+    ["Projects", "/projects/"],
+    ["Certifications", "/certifications/"],
+    ["Experience", "/work-experience/"],
+    ["Recommendations", "/recommendations/"],
   ],
   stalker: [
-    ["Recommendations", "/recommendations/", asset("Recommendations.jpg")],
-    ["Projects", "/projects/", asset("Projects.jpg")],
-    ["Experience", "/work-experience/", asset("Experience.jpg")],
-    ["Certifications", "/certifications/", asset("Certifications.jpg")],
+    ["Recommendations", "/recommendations/"],
+    ["Projects", "/projects/"],
+    ["Experience", "/work-experience/"],
+    ["Certifications", "/certifications/"],
   ],
+};
+
+const topPickImages = {
+  Skills: {
+    light: asset("Skills.jpg"),
+    dark: asset("Skills_D.jpg"),
+  },
+  Experience: {
+    light: asset("Experience.jpg"),
+    dark: asset("Experience_D.jpg"),
+  },
+  Certifications: {
+    light: asset("Certifications.jpg"),
+    dark: asset("Certifications_D.jpg"),
+  },
+  Recommendations: {
+    light: asset("Recommendations.jpg"),
+    dark: asset("Recommendations_D.jpg"),
+  },
+  Projects: {
+    light: asset("Projects.jpg"),
+    dark: asset("Projects_D.jpg"),
+  },
 };
 
 function isValidProfileName(profileName) {
@@ -291,14 +314,44 @@ function updateThemeControls(theme) {
   });
 }
 
+function imageForTheme(title, theme = savedTheme()) {
+  const imageSet = topPickImages[title];
+  if (!imageSet) return "";
+
+  return theme === "light" ? imageSet.light : imageSet.dark;
+}
+
+function fallbackImageFor(title) {
+  return topPickImages[title]?.light || "";
+}
+
+function alternateDarkImageFor(title) {
+  return topPickImages[title]?.alternateDark || "";
+}
+
+function updateThemeImages(theme = savedTheme()) {
+  document.querySelectorAll("[data-theme-image]").forEach((image) => {
+    const title = image.getAttribute("data-theme-image");
+    const nextSrc = imageForTheme(title, theme);
+    const fallbackSrc = fallbackImageFor(title);
+
+    if (!nextSrc || image.getAttribute("src") === nextSrc) return;
+
+    image.dataset.fallbackSrc = fallbackSrc;
+    image.src = nextSrc;
+  });
+}
+
 function applyTheme(theme) {
   const normalizedTheme = theme === "light" ? "light" : "dark";
   document.body.classList.toggle(lightThemeClass, normalizedTheme === "light");
   updateThemeControls(normalizedTheme);
+  updateThemeImages(normalizedTheme);
 }
 
 function applySavedTheme() {
   document.body.classList.remove(lightThemeClass);
+  updateThemeImages("dark");
 }
 
 function isUserSelectionPath(route) {
@@ -466,6 +519,8 @@ function bindPageVisitMetric() {
 function setVinylState(isPlaying) {
   document.querySelectorAll(".vinyl-deck").forEach((deck) => {
     deck.classList.toggle("playing", isPlaying);
+    deck.setAttribute("aria-label", isPlaying ? "Pause vinyl audio" : "Play vinyl audio");
+    deck.setAttribute("aria-pressed", String(isPlaying));
   });
   document.querySelectorAll("[data-vinyl-toggle]").forEach((button) => {
     button.setAttribute("aria-label", isPlaying ? "Pause vinyl audio" : "Play vinyl audio");
@@ -474,39 +529,60 @@ function setVinylState(isPlaying) {
 }
 
 function bindVinylAudio() {
+  const decks = document.querySelectorAll("[data-vinyl-deck]");
   const toggles = document.querySelectorAll("[data-vinyl-toggle]");
   const pauses = document.querySelectorAll("[data-vinyl-pause]");
   const rewinds = document.querySelectorAll("[data-vinyl-rewind]");
-  if (!toggles.length && !pauses.length && !rewinds.length) return;
+  if (!decks.length && !toggles.length && !pauses.length && !rewinds.length) return;
 
   const audio = getVinylAudio();
   setVinylState(!audio.paused);
 
-  toggles.forEach((button) => {
-    button.addEventListener("click", async () => {
-      try {
-        if (audio.paused) {
-          await audio.play();
-          setVinylState(true);
-        } else {
-          audio.pause();
-          setVinylState(false);
-        }
-      } catch (error) {
+  const toggleAudio = async () => {
+    try {
+      if (audio.paused) {
+        await audio.play();
+        setVinylState(true);
+      } else {
+        audio.pause();
         setVinylState(false);
       }
+    } catch (error) {
+      setVinylState(false);
+    }
+  };
+
+  decks.forEach((deck) => {
+    deck.addEventListener("click", (event) => {
+      if (event.target.closest(".vinyl-action")) return;
+      toggleAudio();
+    });
+
+    deck.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      toggleAudio();
+    });
+  });
+
+  toggles.forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      toggleAudio();
     });
   });
 
   pauses.forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
       audio.pause();
       setVinylState(false);
     });
   });
 
   rewinds.forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
       audio.currentTime = 0;
       if (!audio.paused) {
         audio.play().catch(() => setVinylState(false));
@@ -548,7 +624,7 @@ function shell(content) {
           <span data-theme-icon aria-hidden="true">☀</span>
         </button>
         <div class="vinyl-controls" aria-label="Vinyl audio controls">
-          <div class="vinyl-deck">
+          <div class="vinyl-deck" role="button" tabindex="0" aria-label="Play vinyl audio" aria-pressed="false" data-vinyl-deck>
             <span class="vinyl-disc" aria-hidden="true"></span>
             <div class="vinyl-actions" aria-label="Vinyl playback actions">
               <div class="vinyl-credit" aria-label="${vinylSong.title} by ${vinylSong.artist}">
@@ -682,9 +758,9 @@ function row(title, items) {
     <section class="top-picks-row">
       <h2 class="row-title">${title}</h2>
       <div class="card-row">
-        ${items.map(([title, url, image], index) => `
+        ${items.map(([title, url], index) => `
           <button class="pick-card" type="button" style="animation-delay:${0.15 * index}s" data-go="${url}">
-            <img class="pick-image" src="${image}" alt="${title}">
+            <img class="pick-image" src="${imageForTheme(title)}" alt="${title}" data-theme-image="${title}" data-alternate-dark-src="${alternateDarkImageFor(title)}" onerror="if (this.dataset.alternateDarkSrc) { this.src=this.dataset.alternateDarkSrc; this.dataset.alternateDarkSrc=''; } else { this.onerror=null; this.src=this.dataset.fallbackSrc || this.src; }">
             <span class="overlay"><span class="pick-label">${title}</span></span>
           </button>
         `).join("")}

@@ -354,6 +354,11 @@ button {
   width: 30px;
 }
 
+.vinyl-deck:focus-visible {
+  outline: 2px solid #e50914;
+  outline-offset: 4px;
+}
+
 .vinyl-deck::after {
   content: "";
   height: 14px;
@@ -603,6 +608,29 @@ body.light-mode .issued-date,
 body.light-mode .badge-title,
 body.light-mode .contact-icon {
   color: #b20710 !important;
+}
+
+body.light-mode .skills-page h1,
+body.light-mode .skills-page h2,
+body.light-mode .skills-page .skills-title,
+body.light-mode .skills-page .skill-category-title {
+  color: #161616 !important;
+}
+
+body.light-mode .skills-page .skill-category-title {
+  border-color: rgba(178, 7, 16, 0.28) !important;
+}
+
+body.light-mode .skill-category h2,
+body.light-mode .skill-category h3,
+body.light-mode .skill-category-title,
+body.light-mode .skills-section h2,
+body.light-mode .skills-section h3,
+body.light-mode .skills-category h2,
+body.light-mode .skills-category h3 {
+  color: #b20710 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
 }
 
 body.light-mode .tech-badge,
