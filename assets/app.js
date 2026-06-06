@@ -2,6 +2,37 @@ const app = document.getElementById("app");
 
 const asset = (fileName) => `/assets/${fileName}`;
 
+const htmlEntities = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  "\"": "&quot;",
+  "'": "&#39;",
+};
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (character) => htmlEntities[character]);
+}
+
+function safeUrl(value) {
+  const rawUrl = String(value ?? "");
+
+  try {
+    const url = new URL(rawUrl, window.location.origin);
+    const isSameOrigin = url.origin === window.location.origin;
+    const isAllowedExternal = url.protocol === "https:" || url.protocol === "mailto:";
+
+    return isSameOrigin || isAllowedExternal ? escapeHtml(rawUrl) : "#";
+  } catch {
+    return "#";
+  }
+}
+
+function safeInternalPath(value) {
+  const route = String(value ?? "");
+  return /^\/[A-Za-z0-9/_-]*\/?$/.test(route) ? escapeHtml(route) : "/browse/";
+}
+
 const profileImage = asset("LinkedIn_photo.jpeg");
 const resumeLink = asset("Zarif_Ashraf_Resume.pdf");
 const openingSound = `${asset("Intro.mp3")}?v=20260601`;
@@ -123,16 +154,6 @@ function currentProfileName() {
 function profileHomePath() {
   const profileName = currentProfileName();
   return profileName ? `/profile/${profileName}/` : "/browse/";
-}
-
-function navUrl(label, url) {
-  return label === "Home" ? profileHomePath() : url;
-}
-
-function isActiveNav(label, url) {
-  const currentPath = path();
-  const normalizedUrl = url.replace(/\/+$/, "") || "/";
-  return label === "Home" ? currentPath === normalizedUrl : currentPath === normalizedUrl;
 }
 
 const skills = {
@@ -304,7 +325,8 @@ const recommendations = [
 ];
 
 function path() {
-  return window.location.pathname.replace(/\/+$/, "") || "/";
+  const currentPath = window.location.pathname.replace(/\/+$/, "") || "/";
+  return /^\/[A-Za-z0-9/_-]*$/.test(currentPath) ? currentPath : "/404";
 }
 
 function savedTheme() {
@@ -368,9 +390,10 @@ function isUserSelectionPath(route) {
 }
 
 function go(to) {
-  if (isUserSelectionPath(to)) stopVinylAudio();
+  const nextPath = safeInternalPath(to);
+  if (isUserSelectionPath(nextPath)) stopVinylAudio();
 
-  window.history.pushState({}, "", to);
+  window.history.pushState({}, "", nextPath);
   render();
   window.scrollTo(0, 0);
 }
@@ -700,7 +723,7 @@ function bindKofiWidget() {
 
   buttons.forEach((button) => {
     button.addEventListener("click", () => {
-      window.open(kofiLink, "_blank", "noopener,noreferrer");
+      window.open(safeUrl(kofiLink), "_blank", "noopener,noreferrer");
     });
   });
 }
@@ -727,14 +750,12 @@ function bindBannerIntro() {
 }
 
 function shell(content) {
-  const navigation = navItems.map(([label, url]) => [label, navUrl(label, url)]);
-
   return `
     <nav class="navbar" data-navbar>
       <div class="navbar-left">
         <a class="navbar-logo" href="/browse/">Zarif</a>
         <ul class="navbar-links">
-          ${navigation.map(([label, url]) => `<li><a class="${isActiveNav(label, url) ? "active" : ""}" href="${url}">${label}</a></li>`).join("")}
+          ${navItems.map(([label, url]) => `<li><a href="${safeInternalPath(url)}" data-nav-label="${escapeHtml(label)}"${label === "Home" ? " data-home-link" : ""}>${escapeHtml(label)}</a></li>`).join("")}
         </ul>
       </div>
       <div class="navbar-right">
@@ -745,9 +766,9 @@ function shell(content) {
           <div class="vinyl-deck" role="button" tabindex="0" aria-label="Play vinyl audio" aria-pressed="false" data-vinyl-deck>
             <span class="vinyl-disc" aria-hidden="true"></span>
             <div class="vinyl-actions" aria-label="Vinyl playback actions">
-              <div class="vinyl-credit" aria-label="${vinylSong.title} by ${vinylSong.artist}">
-                <span class="vinyl-song">${vinylSong.title}</span>
-                <span class="vinyl-artist">${vinylSong.artist}</span>
+              <div class="vinyl-credit" aria-label="${escapeHtml(vinylSong.title)} by ${escapeHtml(vinylSong.artist)}">
+                <span class="vinyl-song">${escapeHtml(vinylSong.title)}</span>
+                <span class="vinyl-artist">${escapeHtml(vinylSong.artist)}</span>
               </div>
               <div class="vinyl-action-row">
                 <button class="vinyl-action" type="button" aria-label="Play vinyl audio" aria-pressed="false" data-vinyl-toggle>Play</button>
@@ -758,18 +779,34 @@ function shell(content) {
           </div>
         </div>
         <button class="hamburger" type="button" aria-label="Open menu" data-open-sidebar><div></div><div></div><div></div></button>
-        <button class="profile-icon" type="button" aria-label="Choose profile" data-go="/browse/"><img src="${profileImage}" alt="Profile"></button>
+        <button class="profile-icon" type="button" aria-label="Choose profile" data-go="/browse/"><img src="${safeUrl(profileImage)}" alt="Profile"></button>
       </div>
     </nav>
     <button class="sidebar-overlay" type="button" aria-label="Close menu" data-close-sidebar></button>
     <aside class="sidebar" data-sidebar>
       <div class="sidebar-logo">Zarif</div>
       <ul>
-        ${navigation.map(([label, url]) => `<li><a href="${url}">${icon(label)} ${label}</a></li>`).join("")}
+        ${navItems.map(([label, url]) => `<li><a href="${safeInternalPath(url)}" data-nav-label="${escapeHtml(label)}"${label === "Home" ? " data-home-link" : ""}>${icon(label)} ${escapeHtml(label)}</a></li>`).join("")}
       </ul>
     </aside>
     <div class="content">${content}</div>
   `;
+}
+
+function updateNavigationState() {
+  const currentPath = path();
+  const homePath = profileHomePath();
+
+  document.querySelectorAll("[data-home-link]").forEach((link) => {
+    link.setAttribute("href", safeInternalPath(homePath));
+  });
+
+  document.querySelectorAll("[data-nav-label]").forEach((link) => {
+    const label = link.getAttribute("data-nav-label") || "";
+    const href = label === "Home" ? homePath : link.getAttribute("href") || "";
+    const normalizedHref = href.replace(/\/+$/, "") || "/";
+    link.classList.toggle("active", currentPath === normalizedHref);
+  });
 }
 
 function icon(label) {
@@ -787,7 +824,7 @@ function renderSplash() {
   app.innerHTML = `
     <main class="portfolio-container">
       <div class="portfolio-logo" aria-label="ZARIF">
-        ${["Z", "A", "R", "I", "F"].map((letter) => `<span class="logo-letter">${letter}</span>`).join("")}
+        ${["Z", "A", "R", "I", "F"].map((letter) => `<span class="logo-letter">${escapeHtml(letter)}</span>`).join("")}
       </div>
       <button class="splash-start" type="button" data-start-splash>Start</button>
     </main>
@@ -833,9 +870,9 @@ function renderBrowse() {
       <h1 class="who-is-watching">Who's watching?</h1>
       <div class="profiles">
         ${profiles.map((profile) => `
-          <button class="profile-card" type="button" data-go="/profile/${profile.name}/">
-            <span class="image-container"><img class="profile-image" src="${profile.image}" alt="${profile.name} profile"></span>
-            <span class="profile-name">${profile.name}</span>
+          <button class="profile-card" type="button" data-go="${safeInternalPath(`/profile/${profile.name}/`)}">
+            <span class="image-container"><img class="profile-image" src="${safeUrl(profile.image)}" alt="${escapeHtml(profile.name)} profile"></span>
+            <span class="profile-name">${escapeHtml(profile.name)}</span>
           </button>
         `).join("")}
       </div>
@@ -852,17 +889,17 @@ function renderProfile(profileName) {
   rememberProfile(current.name);
   const picks = topPicks[current.name];
   app.innerHTML = shell(`
-    <section class="profile-page" style="background-image: url('${current.backgroundGif}')">
+    <section class="profile-page" style="background-image: url('${safeUrl(current.backgroundGif)}')">
       <div class="profile-banner">
         <div class="banner-name-art" aria-hidden="true">
-          ${nameArtLetters.map((fileName, index) => `<img class="banner-name-letter" src="${asset(fileName)}" alt="${"ZARIF"[index]}">`).join("")}
+          ${nameArtLetters.map((fileName, index) => `<img class="banner-name-letter" src="${safeUrl(asset(fileName))}" alt="${escapeHtml("ZARIF"[index])}">`).join("")}
         </div>
         <div class="banner-content" data-banner-intro aria-expanded="false" tabindex="0">
           <h1 class="banner-headline">Hi, I'm Zarif</h1>
           <p class="banner-description">Software engineer focused on backend systems, distributed data pipelines, and cloud-native services. Experience building scalable microservices, designing high-throughput data flows, and improving system reliability across large engineering teams. Strong foundation in Go, Python, Java, JavaScript/TypeScript, and Kubernetes-based deployments. Skilled at driving architectural improvements, automating developer workflows, and enhancing application performance in production environments.</p>
           <div class="banner-buttons">
-            <button class="banner-button play-button" type="button" data-open="${resumeLink}">▶ <span>Resume</span></button>
-            <button class="banner-button more-info-button" type="button" data-open="${linkedinLink}">ⓘ <span>Linkedin</span></button>
+            <button class="banner-button play-button" type="button" data-open="${safeUrl(resumeLink)}">▶ <span>Resume</span></button>
+            <button class="banner-button more-info-button" type="button" data-open="${safeUrl(linkedinLink)}">ⓘ <span>Linkedin</span></button>
           </div>
         </div>
       </div>
@@ -874,12 +911,12 @@ function renderProfile(profileName) {
 function row(title, items) {
   return `
     <section class="top-picks-row">
-      <h2 class="row-title">${title}</h2>
+      <h2 class="row-title">${escapeHtml(title)}</h2>
       <div class="card-row">
         ${items.map(([title, url], index) => `
-          <button class="pick-card" type="button" style="animation-delay:${0.15 * index}s" data-go="${url}">
-            <img class="pick-image" src="${imageForTheme(title)}" alt="${title}" data-theme-image="${title}" data-alternate-dark-src="${alternateDarkImageFor(title)}" onerror="if (this.dataset.alternateDarkSrc) { this.src=this.dataset.alternateDarkSrc; this.dataset.alternateDarkSrc=''; } else { this.onerror=null; this.src=this.dataset.fallbackSrc || this.src; }">
-            <span class="overlay"><span class="pick-label">${title}</span></span>
+          <button class="pick-card" type="button" style="animation-delay:${0.15 * index}s" data-go="${safeInternalPath(url)}">
+            <img class="pick-image" src="${safeUrl(imageForTheme(title))}" alt="${escapeHtml(title)}" data-theme-image="${escapeHtml(title)}" data-alternate-dark-src="${safeUrl(alternateDarkImageFor(title))}" onerror="if (this.dataset.alternateDarkSrc) { this.src=this.dataset.alternateDarkSrc; this.dataset.alternateDarkSrc=''; } else { this.onerror=null; this.src=this.dataset.fallbackSrc || this.src; }">
+            <span class="overlay"><span class="pick-label">${escapeHtml(title)}</span></span>
           </button>
         `).join("")}
       </div>
@@ -894,12 +931,12 @@ function renderExperience() {
       <div class="timeline">
         ${experiences.map((experience, index) => `
           <section class="timeline-element">
-            <div class="timeline-icon">${index + 1}</div>
+            <div class="timeline-icon">${escapeHtml(index + 1)}</div>
             <article class="timeline-content">
-              <h2>${experience.role}</h2>
-              <h3>${experience.company}</h3>
-              <p class="timeline-meta">${experience.location} / ${experience.dates}</p>
-              <p class="timeline-summary">${experience.summary}</p>
+              <h2>${escapeHtml(experience.role)}</h2>
+              <h3>${escapeHtml(experience.company)}</h3>
+              <p class="timeline-meta">${escapeHtml(experience.location)} / ${escapeHtml(experience.dates)}</p>
+              <p class="timeline-summary">${escapeHtml(experience.summary)}</p>
             </article>
           </section>
         `).join("")}
@@ -916,14 +953,14 @@ function renderRecommendations() {
         ${recommendations.map((recommendation) => `
           <div class="recommendation-card">
             <header class="recommendation-header">
-              <div class="recommendation-avatar" aria-hidden="true">${recommendation.name.charAt(0)}</div>
+              <div class="recommendation-avatar" aria-hidden="true">${escapeHtml(recommendation.name.charAt(0))}</div>
               <div>
-                <h3>${recommendation.name}</h3>
-                <p>${recommendation.title}</p>
+                <h3>${escapeHtml(recommendation.name)}</h3>
+                <p>${escapeHtml(recommendation.title)}</p>
               </div>
             </header>
             <div class="recommendation-body">
-              <p>"${recommendation.quote}"</p>
+              <p>"${escapeHtml(recommendation.quote)}"</p>
             </div>
           </div>
         `).join("")}
@@ -937,13 +974,13 @@ function renderSkills() {
     <main class="skills-container">
       ${Object.entries(skills).map(([category, items]) => `
         <section class="skill-category">
-          <h2 class="category-title">${category}</h2>
+          <h2 class="category-title">${escapeHtml(category)}</h2>
           <div class="skills-grid">
             ${items.map(([name, description], index) => `
               <article class="skill-card" style="--delay:${0.07 * index}s">
                 <div class="icon">◆</div>
-                <h3 class="skill-name">${name}</h3>
-                <p class="skill-description">${description}</p>
+                <h3 class="skill-name">${escapeHtml(name)}</h3>
+                <p class="skill-description">${escapeHtml(description)}</p>
               </article>
             `).join("")}
           </div>
@@ -958,15 +995,15 @@ function renderProjects() {
     <main class="projects-container">
       <div class="projects-grid">
         ${projects.map((project, index) => `
-          <a class="project-card" href="${project.url}" target="_blank" rel="noopener noreferrer" style="--delay:${0.12 * index}s">
-            <img class="project-image" src="${project.image}" alt="${project.title}">
+          <a class="project-card" href="${safeUrl(project.url)}" target="_blank" rel="noopener noreferrer" style="--delay:${0.12 * index}s">
+            <img class="project-image" src="${safeUrl(project.image)}" alt="${escapeHtml(project.title)}">
             <div class="project-details">
               <div class="project-heading">
-                <h3>${project.title}</h3>
+                <h3>${escapeHtml(project.title)}</h3>
                 <span class="project-link-arrow" aria-hidden="true">↗</span>
               </div>
-              <p>${project.description}</p>
-              <div class="tech-used">${project.tech.split(", ").map((item) => `<span class="tech-badge">${item}</span>`).join("")}</div>
+              <p>${escapeHtml(project.description)}</p>
+              <div class="tech-used">${project.tech.split(", ").map((item) => `<span class="tech-badge">${escapeHtml(item)}</span>`).join("")}</div>
             </div>
           </a>
         `).join("")}
@@ -979,19 +1016,19 @@ function renderContact() {
   app.innerHTML = shell(`
     <main class="contact-container">
       <section class="linkedin-badge-custom">
-        <img src="${profileImage}" alt="Zarif Ashraf" class="badge-avatar">
+        <img src="${safeUrl(profileImage)}" alt="Zarif Ashraf" class="badge-avatar">
         <div class="badge-content">
           <h1 class="badge-name">Zarif Ashraf</h1>
           <p class="badge-title">Software Engineer</p>
           <p class="badge-description">Thinking Slow. Learning Fast.</p>
           <p class="badge-company">McGill University</p>
-          <a href="${linkedinLink}" target="_blank" rel="noopener noreferrer" class="badge-link">View Profile</a>
+          <a href="${safeUrl(linkedinLink)}" target="_blank" rel="noopener noreferrer" class="badge-link">View Profile</a>
         </div>
       </section>
       <div class="contact-header"><p>A good conversation always has its place.</p></div>
       <div class="contact-details">
         <div class="contact-item"><span class="contact-icon">✉</span><a href="mailto:zarif.ashraf@mail.mcgill.ca" class="contact-link">zarif.ashraf@mail.mcgill.ca</a></div>
-        <div class="contact-item"><span class="contact-icon">▤</span><a href="${resumeLink}" target="_blank" rel="noopener noreferrer" class="contact-link">View Resume</a></div>
+        <div class="contact-item"><span class="contact-icon">▤</span><a href="${safeUrl(resumeLink)}" target="_blank" rel="noopener noreferrer" class="contact-link">View Resume</a></div>
       </div>
       <div class="contact-metrics" aria-label="Portfolio metrics">
         <button class="contact-item upvote-button" type="button" data-upvote>
@@ -1017,8 +1054,8 @@ function renderMusic() {
   app.innerHTML = shell(`
     <main class="music-page">
       <div class="quote"><p>"Rock and Roll isn't a genre, it's a way of life."</p></div>
-      <section class="genre-section"><h2>Explore by Genre</h2><div class="genres">${genres.map((item, index) => `<div class="genre-card" style="animation-delay:${0.2 * index}s"><p>${item}</p></div>`).join("")}</div></section>
-      <section class="albums-section"><h2>Favorite Albums</h2><div class="albums">${albums.map(([title, artist, image], index) => `<article class="album-card" style="animation-delay:${0.3 * index}s"><img class="album-image" src="${image}" alt="${title}"><div class="album-details"><h4>${title}</h4><p>by ${artist}</p></div></article>`).join("")}</div></section>
+      <section class="genre-section"><h2>Explore by Genre</h2><div class="genres">${genres.map((item, index) => `<div class="genre-card" style="animation-delay:${0.2 * index}s"><p>${escapeHtml(item)}</p></div>`).join("")}</div></section>
+      <section class="albums-section"><h2>Favorite Albums</h2><div class="albums">${albums.map(([title, artist, image], index) => `<article class="album-card" style="animation-delay:${0.3 * index}s"><img class="album-image" src="${safeUrl(image)}" alt="${escapeHtml(title)}"><div class="album-details"><h4>${escapeHtml(title)}</h4><p>by ${escapeHtml(artist)}</p></div></article>`).join("")}</div></section>
     </main>
   `);
 }
@@ -1031,8 +1068,8 @@ function renderReading() {
       <div class="books-grid">
         ${books.map(([title, author, description, image], index) => `
           <article class="book-card" style="--delay:${0.1 * index}s">
-            <img class="book-cover" src="${image}" alt="${title}">
-            <div class="book-info"><h2 class="book-title">${title}</h2><h3 class="book-author">${author}</h3><p class="book-description">${description}</p></div>
+            <img class="book-cover" src="${safeUrl(image)}" alt="${escapeHtml(title)}">
+            <div class="book-info"><h2 class="book-title">${escapeHtml(title)}</h2><h3 class="book-author">${escapeHtml(author)}</h3><p class="book-description">${escapeHtml(description)}</p></div>
           </article>
         `).join("")}
       </div>
@@ -1047,9 +1084,9 @@ function renderBlogs() {
       <p class="blogs-intro">A collection of notes and tutorials on software development.</p>
       <div class="blogs-grid">
         ${blogs.map(([title, description, platform, url], index) => `
-          <a href="${url}" target="_blank" rel="noopener noreferrer" class="blog-card" style="--delay:${0.2 * index}s">
+          <a href="${safeUrl(url)}" target="_blank" rel="noopener noreferrer" class="blog-card" style="--delay:${0.2 * index}s">
             <div class="blog-icon">✎</div>
-            <div class="blog-info"><h2 class="blog-title">${title}</h2><p class="blog-description">${description}</p><span class="blog-platform">${platform}</span></div>
+            <div class="blog-info"><h2 class="blog-title">${escapeHtml(title)}</h2><p class="blog-description">${escapeHtml(description)}</p><span class="blog-platform">${escapeHtml(platform)}</span></div>
           </a>
         `).join("")}
       </div>
@@ -1063,8 +1100,8 @@ function renderCertifications() {
       <h1 class="certifications-title">Certifications</h1>
       <div class="certifications-grid">
         ${certifications.map((certification, index) => `
-          <a href="${certification.url}" target="_blank" rel="noopener noreferrer" class="certification-card" style="--delay:${0.2 * index}s">
-            <div class="certification-content"><div class="certification-icon">▣</div><h2>${certification.title}</h2><p>${certification.issuer}</p><span class="issued-date">Issued ${certification.date}</span></div>
+          <a href="${safeUrl(certification.url)}" target="_blank" rel="noopener noreferrer" class="certification-card" style="--delay:${0.2 * index}s">
+            <div class="certification-content"><div class="certification-icon">▣</div><h2>${escapeHtml(certification.title)}</h2><p>${escapeHtml(certification.issuer)}</p><span class="issued-date">Issued ${escapeHtml(certification.date)}</span></div>
             <div class="certification-link">↗</div>
           </a>
         `).join("")}
@@ -1078,6 +1115,8 @@ function renderNotFound() {
 }
 
 function bindInteractions() {
+  updateNavigationState();
+
   document.querySelectorAll("[data-go]").forEach((el) => {
     el.addEventListener("click", () => go(el.getAttribute("data-go")));
   });
@@ -1091,7 +1130,10 @@ function bindInteractions() {
     });
   });
   document.querySelectorAll("[data-open]").forEach((el) => {
-    el.addEventListener("click", () => window.open(el.getAttribute("data-open"), "_blank"));
+    el.addEventListener("click", () => {
+      const opened = window.open(safeUrl(el.getAttribute("data-open")), "_blank", "noopener,noreferrer");
+      if (opened) opened.opener = null;
+    });
   });
   const navbar = document.querySelector("[data-navbar]");
   if (navbar) {
@@ -1129,7 +1171,10 @@ function render() {
     stopVinylAudio();
     renderBrowse();
   }
-  else if (currentPath.startsWith("/profile/")) renderProfile(currentPath.split("/")[2]);
+  else if (currentPath.startsWith("/profile/")) {
+    const requestedProfile = profiles.find((profile) => currentPath === `/profile/${profile.name}`);
+    requestedProfile ? renderProfile(requestedProfile.name) : renderNotFound();
+  }
   else if (currentPath === "/work-experience") renderExperience();
   else if (currentPath === "/recommendations") renderRecommendations();
   else if (currentPath === "/skills") renderSkills();
