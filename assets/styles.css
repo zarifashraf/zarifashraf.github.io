@@ -310,6 +310,43 @@ button {
   color: #e50914;
 }
 
+.kofi-nav-button {
+  background: #e50914;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 800;
+  margin-right: 14px;
+  min-height: 34px;
+  padding: 0 12px;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.kofi-nav-button:hover,
+.kofi-nav-button:focus-visible {
+  background: #b20710;
+  border-color: rgba(255, 255, 255, 0.38);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.floatingchat-container-wrap,
+.floatingchat-container,
+.floating-chat-kofi-popup-iframe,
+.kofi-widget-iframe,
+#kofi-widget-overlay,
+#kofi-widget-overlay iframe,
+iframe[src*="ko-fi.com"],
+iframe[src*="storage.ko-fi.com"],
+[class*="kofi"],
+[id*="kofi"],
+[class*="floatingchat"] {
+  left: auto !important;
+  right: 20px !important;
+}
+
 .vinyl-controls {
   align-items: center;
   display: flex;
@@ -543,6 +580,7 @@ body.light-mode .sidebar-logo {
 }
 
 body.light-mode .theme-toggle,
+body.light-mode .kofi-nav-button,
 body.light-mode .vinyl-action,
 body.light-mode .vinyl-actions,
 body.light-mode .vinyl-controls,
@@ -560,6 +598,12 @@ body.light-mode .linkedin-badge-custom {
   background: #fbf4e7 !important;
   border-color: rgba(178, 7, 16, 0.24) !important;
   color: #161616 !important;
+}
+
+body.light-mode .kofi-nav-button {
+  background: #e50914 !important;
+  border-color: rgba(178, 7, 16, 0.2) !important;
+  color: #fff !important;
 }
 
 body.light-mode .skill-card:hover,
@@ -646,6 +690,18 @@ body.light-mode .overlay {
 
 body.light-mode .pick-label {
   color: #161616 !important;
+}
+
+body.light-mode .profile-name {
+  color: #3a3128 !important;
+}
+
+body.light-mode .profile-card:hover .profile-name {
+  color: #b20710 !important;
+}
+
+body.light-mode .profile-card:hover .image-container {
+  border-color: #b20710 !important;
 }
 
 body.light-mode .profile-page {
@@ -744,6 +800,13 @@ body.light-mode.profile-home-page .banner-content:focus-within {
     margin-right: 10px;
     height: 24px;
     width: 24px;
+  }
+
+  .kofi-nav-button {
+    font-size: 0.68rem;
+    margin-right: 10px;
+    min-height: 30px;
+    padding: 0 9px;
   }
 
   .theme-toggle [data-theme-icon] {
@@ -1742,8 +1805,8 @@ body.light-mode .timeline-icon {
   bottom: 24px;
   display: flex;
   gap: 12px;
+  left: 24px;
   position: fixed;
-  right: 24px;
   z-index: 45;
 }
 

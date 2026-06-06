@@ -19,6 +19,14 @@ const pageVisitCountStorageKey = "portfolio-page-visits-count";
 const selectedProfileStorageKey = "portfolio-selected-profile";
 const lightThemeClass = "light-mode";
 const profileHomeClass = "profile-home-page";
+const kofiLink = "https://ko-fi.com/zarifashraf/tip";
+const kofiWidgetScript = "https://storage.ko-fi.com/cdn/scripts/overlay-widget.js";
+const kofiWidgetOptions = {
+  type: "floating-chat",
+  "floating-chat.donateButton.text": "Support me",
+  "floating-chat.donateButton.background-color": "#e50914",
+  "floating-chat.donateButton.text-color": "#fff",
+};
 
 const navItems = [
   ["Home", "/browse/"],
@@ -370,6 +378,9 @@ function go(to) {
 let introAudio;
 let vinylAudio;
 let vinylEventsBound = false;
+let kofiWidgetLoaded = false;
+let kofiWidgetLoading;
+let kofiPositionObserver;
 
 function playOpeningSound() {
   if (introAudio) {
@@ -604,6 +615,89 @@ function bindThemeToggle() {
   document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
     button.addEventListener("click", () => {
       applyTheme(savedTheme() === "light" ? "dark" : "light");
+    });
+  });
+}
+
+function drawKofiWidget() {
+  if (kofiWidgetLoaded || !window.kofiWidgetOverlay) return;
+  window.kofiWidgetOverlay.draw("zarifashraf", kofiWidgetOptions);
+  kofiWidgetLoaded = true;
+  positionKofiWidget();
+  watchKofiWidgetPosition();
+}
+
+function positionKofiWidget() {
+  const selectors = [
+    ".floatingchat-container-wrap",
+    ".floatingchat-container",
+    ".floating-chat-kofi-popup-iframe",
+    ".kofi-widget-iframe",
+    "#kofi-widget-overlay",
+    "#kofi-widget-overlay iframe",
+    "iframe[src*='ko-fi.com']",
+    "iframe[src*='storage.ko-fi.com']",
+    "[class*='kofi']",
+    "[id*='kofi']",
+    "[class*='floatingchat']",
+  ];
+
+  window.setTimeout(() => {
+    document.querySelectorAll(selectors.join(", ")).forEach((widget) => {
+      widget.style.left = "auto";
+      widget.style.right = "20px";
+    });
+  }, 300);
+}
+
+function watchKofiWidgetPosition() {
+  if (kofiPositionObserver) return;
+
+  kofiPositionObserver = new MutationObserver(() => positionKofiWidget());
+  kofiPositionObserver.observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
+}
+
+function loadKofiWidget() {
+  if (kofiWidgetLoaded) return Promise.resolve();
+  if (kofiWidgetLoading) return kofiWidgetLoading;
+
+  kofiWidgetLoading = new Promise((resolve) => {
+    const existingScript = document.querySelector(`script[src="${kofiWidgetScript}"]`);
+    if (existingScript) {
+      existingScript.addEventListener("load", () => {
+        drawKofiWidget();
+        resolve();
+      }, { once: true });
+      drawKofiWidget();
+      resolve();
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = kofiWidgetScript;
+    script.async = true;
+    script.onload = () => {
+      drawKofiWidget();
+      resolve();
+    };
+    script.onerror = resolve;
+    document.body.appendChild(script);
+  });
+
+  return kofiWidgetLoading;
+}
+
+function bindKofiWidget() {
+  const buttons = document.querySelectorAll("[data-kofi-widget]");
+
+  loadKofiWidget();
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      window.open(kofiLink, "_blank", "noopener,noreferrer");
     });
   });
 }
@@ -998,6 +1092,7 @@ function bindInteractions() {
   bindPageVisitMetric();
   bindVinylAudio();
   bindThemeToggle();
+  bindKofiWidget();
 }
 
 function render() {
