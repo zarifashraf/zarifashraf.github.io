@@ -628,6 +628,9 @@ function drawKofiWidget() {
 }
 
 function positionKofiWidget() {
+  const isMobile = window.matchMedia("(max-width: 768px)").matches;
+  const offset = "6px";
+
   const selectors = [
     ".floatingchat-container-wrap",
     ".floatingchat-container",
@@ -645,7 +648,7 @@ function positionKofiWidget() {
   window.setTimeout(() => {
     document.querySelectorAll(selectors.join(", ")).forEach((widget) => {
       widget.style.left = "auto";
-      widget.style.right = "20px";
+      widget.style.right = offset;
     });
   }, 300);
 }
@@ -699,6 +702,27 @@ function bindKofiWidget() {
     button.addEventListener("click", () => {
       window.open(kofiLink, "_blank", "noopener,noreferrer");
     });
+  });
+}
+
+function bindBannerIntro() {
+  const intro = document.querySelector("[data-banner-intro]");
+  if (!intro) return;
+
+  const toggleIntro = () => {
+    const expanded = intro.classList.toggle("is-expanded");
+    intro.setAttribute("aria-expanded", String(expanded));
+  };
+
+  intro.addEventListener("click", (event) => {
+    if (event.target.closest(".banner-button")) return;
+    toggleIntro();
+  });
+
+  intro.addEventListener("keydown", (event) => {
+    if (event.target !== intro || (event.key !== "Enter" && event.key !== " ")) return;
+    event.preventDefault();
+    toggleIntro();
   });
 }
 
@@ -833,7 +857,7 @@ function renderProfile(profileName) {
         <div class="banner-name-art" aria-hidden="true">
           ${nameArtLetters.map((fileName, index) => `<img class="banner-name-letter" src="${asset(fileName)}" alt="${"ZARIF"[index]}">`).join("")}
         </div>
-        <div class="banner-content">
+        <div class="banner-content" data-banner-intro aria-expanded="false" tabindex="0">
           <h1 class="banner-headline">Hi, I'm Zarif</h1>
           <p class="banner-description">Software engineer focused on backend systems, distributed data pipelines, and cloud-native services. Experience building scalable microservices, designing high-throughput data flows, and improving system reliability across large engineering teams. Strong foundation in Go, Python, Java, JavaScript/TypeScript, and Kubernetes-based deployments. Skilled at driving architectural improvements, automating developer workflows, and enhancing application performance in production environments.</p>
           <div class="banner-buttons">
@@ -1093,6 +1117,7 @@ function bindInteractions() {
   bindVinylAudio();
   bindThemeToggle();
   bindKofiWidget();
+  bindBannerIntro();
 }
 
 function render() {

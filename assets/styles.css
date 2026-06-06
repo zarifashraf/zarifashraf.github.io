@@ -344,7 +344,33 @@ iframe[src*="storage.ko-fi.com"],
 [id*="kofi"],
 [class*="floatingchat"] {
   left: auto !important;
-  right: 20px !important;
+  right: 6px !important;
+}
+
+.floatingchat-container-wrap,
+.floatingchat-container {
+  transform: scale(0.86) !important;
+  transform-origin: bottom right !important;
+}
+
+@media (max-width: 768px) {
+  .floatingchat-container-wrap,
+  .floatingchat-container,
+  .floating-chat-kofi-popup-iframe,
+  .kofi-widget-iframe,
+  #kofi-widget-overlay,
+  #kofi-widget-overlay iframe,
+  iframe[src*="ko-fi.com"],
+  iframe[src*="storage.ko-fi.com"],
+  [class*="kofi"],
+  [id*="kofi"],
+  [class*="floatingchat"] {
+    bottom: 14px !important;
+    left: auto !important;
+    max-width: calc(100vw - 12px) !important;
+    right: 6px !important;
+  }
+
 }
 
 .vinyl-controls {
@@ -745,7 +771,8 @@ body.light-mode.profile-home-page .pick-card {
 }
 
 .banner-content:hover,
-.banner-content:focus-within {
+.banner-content:focus-within,
+.banner-content.is-expanded {
   background: rgba(0, 0, 0, 0.58);
   border-color: rgba(255, 255, 255, 0.14);
   box-shadow: 0 18px 42px rgba(0, 0, 0, 0.42);
@@ -753,10 +780,16 @@ body.light-mode.profile-home-page .pick-card {
 }
 
 body.light-mode.profile-home-page .banner-content:hover,
-body.light-mode.profile-home-page .banner-content:focus-within {
+body.light-mode.profile-home-page .banner-content:focus-within,
+body.light-mode.profile-home-page .banner-content.is-expanded {
   background: rgba(0, 0, 0, 0.62) !important;
   border-color: rgba(255, 255, 255, 0.16) !important;
   box-shadow: 0 18px 42px rgba(0, 0, 0, 0.44) !important;
+}
+
+.banner-content:focus-visible {
+  outline: 2px solid rgba(229, 9, 20, 0.9);
+  outline-offset: 3px;
 }
 
 .banner-description {
@@ -2289,9 +2322,9 @@ body.light-mode .timeline-icon {
   }
 
   .profile-banner {
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
-    padding: 60px 20px;
+    padding: 72px 16px 26px;
   }
 
   .banner-name-art {
@@ -2303,16 +2336,58 @@ body.light-mode .timeline-icon {
   }
 
   .banner-content {
-    max-width: 100%;
+    background: rgba(0, 0, 0, 0.34);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    max-height: 34vh;
+    max-width: 440px !important;
+    overflow: hidden;
+    padding: 0.85rem !important;
+    transition: max-height 0.28s ease, background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, backdrop-filter 0.25s ease;
+    width: min(92vw, 440px) !important;
+  }
+
+  .banner-content.is-expanded {
+    background: rgba(0, 0, 0, 0.68);
+    max-height: min(78vh, 620px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    backdrop-filter: blur(10px);
+  }
+
+  .banner-headline {
+    font-size: clamp(1.7rem, 8vw, 2.5rem);
+    margin-bottom: 6px;
   }
 
   .banner-description {
-    font-size: 12px;
+    display: -webkit-box;
+    font-size: 0.9rem !important;
+    line-height: 1.42 !important;
+    margin: 8px 0 14px !important;
+    max-width: none !important;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+  }
+
+  .banner-content.is-expanded .banner-description {
+    display: block;
+    font-size: 0.98rem !important;
+    line-height: 1.5 !important;
+    overflow: visible;
+    -webkit-line-clamp: unset;
   }
 
   .banner-buttons {
-    flex-direction: column;
-    gap: 5px;
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .banner-button {
+    min-height: 36px;
+    padding: 0.55rem 0.85rem;
   }
 
   .profiles {
