@@ -5,7 +5,7 @@ const asset = (fileName) => `/assets/${fileName}`;
 const profileImage = asset("LinkedIn_photo.jpeg");
 const resumeLink = asset("Zarif_Ashraf_Resume.pdf");
 const openingSound = `${asset("Intro.mp3")}?v=20260601`;
-const vinylTrack = asset("Hannah (The Sun).mp3");
+const vinylTrack = asset("Hannah.mp3");
 const vinylSong = {
   title: "Hannah (The Sun)",
   artist: "Fred Again",
