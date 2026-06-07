@@ -345,9 +345,29 @@ const stalkerBooks = [
   },
 ];
 
+const stalkerGames = [
+  {
+    title: "Age of Mythology",
+    studio: "Ensemble studios",
+  },
+  {
+    title: "God of War",
+    studio: "Santa Monica Studio",
+  }, 
+  {
+    title: "Horizon",
+    studio: "Guerrilla Games",
+  }, 
+  {
+    title: "The Last of Us",
+    studio: "Naughty Dog",
+  }
+];
+
 const forYou = {
-  Quotes: stalkerQuotes.map((quote) => [quote.quote, quote.author]),
-  Books: stalkerBooks.map((book) => [book.title, book.author]),
+  "Quotes": stalkerQuotes.map((quote) => [quote.quote, quote.author]),
+  "Books": stalkerBooks.map((book) => [book.title, book.author]),
+  "Video Games": stalkerGames.map((game) => [game.title, game.studio]),
 };
 
 function path() {
