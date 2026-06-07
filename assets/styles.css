@@ -1564,6 +1564,16 @@ body.light-mode .timeline-icon {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
+.for-you-container .skills-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.for-you-container .skills-grid > .skill-card:only-child {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: 75%;
+}
+
 .skill-card,
 .project-card,
 .book-card,
@@ -2160,6 +2170,14 @@ body.light-mode .timeline-icon {
 }
 
 @media (max-width: 768px) {
+  .for-you-container .skills-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .for-you-container .skills-grid > .skill-card:only-child {
+    width: 100%;
+  }
+
   .projects-container {
     padding-left: 0;
     padding-right: 0;

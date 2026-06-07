@@ -87,8 +87,8 @@ const profiles = [
 
 const topPicks = {
   recruiter: [
-    ["Skills", "/skills/"],
     ["Experience", "/work-experience/"],
+    ["Skills", "/skills/"],
     ["Certifications", "/certifications/"],
     ["Recommendations", "/recommendations/"],
     ["Projects", "/projects/"],
@@ -98,13 +98,12 @@ const topPicks = {
     ["Projects", "/projects/"],
     ["Certifications", "/certifications/"],
     ["Experience", "/work-experience/"],
-    ["Recommendations", "/recommendations/"],
   ],
   stalker: [
     ["Recommendations", "/recommendations/"],
     ["Projects", "/projects/"],
-    ["Experience", "/work-experience/"],
     ["Certifications", "/certifications/"],
+    ["For you", "/for-you/"],
   ],
 };
 
@@ -128,6 +127,10 @@ const topPickImages = {
   Projects: {
     light: asset("Projects.jpg"),
     dark: asset("Projects_D.jpg"),
+  },
+  "For you": {
+    light: asset("Experience.jpg"),
+    dark: asset("Experience_D.jpg"),
   },
 };
 
@@ -323,6 +326,29 @@ const recommendations = [
     quote: "I am pleased to recommend Zarif Ashraf, who has consistently demonstrated outstanding teamwork, technical expertise, and leadership abilities in our projects together. Ash is an effective communicator, known for clearly articulating project goals and technical details to our team. Ash is a fast learner who quickly adapts to new technologies such as Go, Python and testing techniques. He is always ready to lend a hand to peers. I confidently recommend Zarif Ashraf for any role that requires deep technical knowledge, teamwork, and leadership.",
   },
 ];
+
+const stalkerQuotes = [
+  {
+    quote: "Would I rather be feared or loved? Easy. Both. I want people to be afraid of how much they love me.",
+    author: "Michael Scott",
+  }
+];
+
+const stalkerBooks = [
+  {
+    title: "The Art of Thinking Clearly",
+    author: "Rolf Dobelli",
+  },
+  {
+    title: "Essentialism: The Disciplined Pursuit of Less",
+    author: "Greg McKeown",
+  },
+];
+
+const forYou = {
+  Quotes: stalkerQuotes.map((quote) => [quote.quote, quote.author]),
+  Books: stalkerBooks.map((book) => [book.title, book.author]),
+};
 
 function path() {
   const currentPath = window.location.pathname.replace(/\/+$/, "") || "/";
@@ -969,6 +995,27 @@ function renderRecommendations() {
   `);
 }
 
+function renderForYou() {
+  app.innerHTML = shell(`
+    <main class="skills-container for-you-container">
+      ${Object.entries(forYou).map(([category, items]) => `
+        <section class="skill-category">
+          <h2 class="category-title">${escapeHtml(category)}</h2>
+          <div class="skills-grid">
+            ${items.map(([name, description], index) => `
+              <article class="skill-card" style="--delay:${0.07 * index}s">
+                <div class="icon">◆</div>
+                <h3 class="skill-name">${escapeHtml(name)}</h3>
+                <p class="skill-description">${escapeHtml(description)}</p>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+      `).join("")}
+    </main>
+  `);
+}
+
 function renderSkills() {
   app.innerHTML = shell(`
     <main class="skills-container">
@@ -1177,6 +1224,7 @@ function render() {
   }
   else if (currentPath === "/work-experience") renderExperience();
   else if (currentPath === "/recommendations") renderRecommendations();
+  else if (currentPath === "/for-you") renderForYou();
   else if (currentPath === "/skills") renderSkills();
   else if (currentPath === "/projects") renderProjects();
   else if (currentPath === "/contact-me") renderContact();
